@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next export"
+    "export": "next export",
+    "update-node": "npm install -g npm@latest",
+    "update": "npm update"
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.10",
