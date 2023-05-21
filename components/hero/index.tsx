@@ -43,7 +43,7 @@ export const Hero = () => {
                         display: 'inline',
                      }}
                   >
-                     The modern landing page{' '}
+                     The most modern landing page{' '}
                   </Text>
                   <Text
                      h1
