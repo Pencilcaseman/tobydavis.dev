@@ -89,7 +89,7 @@ const tutorials: DropdownElement[] = [
     },
 ];
 
-function navbarDropdownMenu(label: string, elements: DropdownElement[]) {
+function NavbarDropdownMenu(label: string, elements: DropdownElement[]) {
     let router = useRouter();
     const [selectedKey, setSelectedKey] = useState();
 
@@ -191,9 +191,9 @@ export const Nav = () => {
                         pl: '6rem',
                     }}
                 >
-                    {navbarDropdownMenu("Projects", projects)}
-                    {navbarDropdownMenu("Tutorials", tutorials)}
-                    {navbarDropdownMenu("Socials", socials)}
+                    {NavbarDropdownMenu("Projects", projects)}
+                    {NavbarDropdownMenu("Tutorials", tutorials)}
+                    {NavbarDropdownMenu("Socials", socials)}
 
                     <Navbar.Link isActive href="#">
                         Customers
