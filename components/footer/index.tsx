@@ -1,239 +1,170 @@
-import {Divider, Text} from '@nextui-org/react';
-import React from 'react';
-import {AcmeLogo} from '../navbar/logo';
-import {Box} from '../styles/box';
-import {Flex} from '../styles/flex';
+import {Divider, Link, Text} from "@nextui-org/react";
+import React from "react";
+import {PenciLogo} from "../icons/logo";
+import {Box} from "../styles/box";
+import {Flex} from "../styles/flex";
+import {icons} from "../icons/icons";
+
+interface FooterItem {
+    key: string;
+    title: string;
+    link: string;
+}
+
+function footerList(title: string, items: FooterItem[]) {
+    return (
+        <Flex
+            direction={"column"}
+            css={{
+                "gap": "$4",
+            }}>
+
+            <Text
+                css={{
+                    "color": "$primary",
+                    "fontWeight": "$semibold",
+                    "fontSize": "18pt",
+                }}
+            >
+                {title}
+            </Text>
+            {
+                items.map((item) => (
+                    <Link
+                        key={item.key}
+                        href={item.link}
+                        css={{
+                            "color": "$accents8",
+                            "&:hover": {
+                                color: "$accents9",
+                            },
+                        }}
+                    >
+                        {item.title}
+                    </Link>
+                ))
+            }
+        </Flex>
+    )
+}
 
 export const Footer = () => {
-   return (
-      <Flex
-         css={{
-            py: '$20',
-            px: '$6',
-         }}
-      >
-         <Box as={'footer'} css={{width: '100%'}}>
-            <Flex
-               justify={'center'}
-               wrap={'wrap'}
-               align={'center'}
-               css={{
-                  'gap': '$10',
-                  '&  ul': {
-                     margin: 0,
-                  },
-                  '@sm': {},
-               }}
-            >
-               <Flex
-                  css={{gap: '$5', w: '250px'}}
-                  direction={'column'}
-                  align={'center'}
-               >
-                  <AcmeLogo />
-                  <Box as={'ul'} css={{gap: '$5', listStyle: 'none'}}>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           First Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Second Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Third Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Forth Link
-                        </Text>
-                     </Box>
-                  </Box>
-               </Flex>
-               <Flex
-                  css={{gap: '$5', w: '250px'}}
-                  direction={'column'}
-                  align={'center'}
-               >
-                  <Text h5>Resources</Text>
-                  <Box as={'ul'} css={{gap: '$5', listStyle: 'none'}}>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           First Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Second Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Third Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Forth Link
-                        </Text>
-                     </Box>
-                  </Box>
-               </Flex>
-               <Flex
-                  css={{gap: '$5', w: '250px'}}
-                  direction={'column'}
-                  align={'center'}
-               >
-                  <Text h5>Contact</Text>
-                  <Box as={'ul'} css={{gap: '$5', listStyle: 'none'}}>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           First Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Second Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Third Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Forth Link
-                        </Text>
-                     </Box>
-                  </Box>
-               </Flex>
-               <Flex
-                  css={{gap: '$5', w: '250px'}}
-                  direction={'column'}
-                  align={'center'}
-               >
-                  <Text h5>Legal</Text>
-                  <Box as={'ul'} css={{gap: '$5', listStyle: 'none'}}>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           First Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Second Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Third Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Forth Link
-                        </Text>
-                     </Box>
-                  </Box>
-               </Flex>
-               <Flex
-                  css={{gap: '$5', w: '250px'}}
-                  direction={'column'}
-                  align={'center'}
-               >
-                  <Text h5>Press</Text>
-                  <Box as={'ul'} css={{gap: '$5', listStyle: 'none'}}>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           First Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Second Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Third Link
-                        </Text>
-                     </Box>
-                     <Box as={'li'}>
-                        <Text span css={{color: '$accents8'}}>
-                           Forth Link
-                        </Text>
-                     </Box>
-                  </Box>
-               </Flex>
-            </Flex>
-            <Box
-               css={{
-                  'px': '$10',
-                  '@md': {
-                     px: '$56',
-                  },
-               }}
-            >
-               <Divider
-                  css={{
-                     mt: '$14',
-                     display: 'flex',
-                     justifyContent: 'center',
-                  }}
-               />
-               <Flex
-                  //   justify={'between'}
-                  align={'center'}
-                  wrap={'wrap'}
-                  css={{
-                     'pt': '$8',
-                     'gap': '$10',
-                     'justifyContent': 'center',
-                     '@md': {
-                        justifyContent: 'space-between',
-                     },
-                  }}
-               >
-                  <Flex
-                     css={{
-                        gap: '$10',
-                     }}
-                     wrap={'wrap'}
-                  >
-                     <AcmeLogo />
-                     <AcmeLogo />
-                     <AcmeLogo />
-                     <AcmeLogo />
-                  </Flex>
-                  <Flex
-                     css={{
-                        gap: '$6',
-                     }}
-                  >
-                     <Text span css={{color: '$accents8'}}>
-                        Terms of Service
-                     </Text>
-                     <Text span css={{color: '$accents8'}}>
-                        Privacy Policy
-                     </Text>
-                  </Flex>
-                  <Flex
-                     css={{
-                        gap: '$6',
-                     }}
-                  >
-                     <Text span css={{color: '$accents8'}}>
-                        © Copyright 2021 Acme Inc.
-                     </Text>
-                  </Flex>
-               </Flex>
+    return (
+        <Flex
+            css={{
+                py: "$20",
+                px: "$6",
+            }}
+        >
+            <Box as={"footer"} css={{width: "100%"}}>
+                <Flex
+                    direction={"row"}
+                    justify={"center"}
+                    align={"center"}
+                    wrap={"wrap"}
+                    css={{
+                        "gap": "$40",
+                        "pt": "$2",
+                        "pb": "$10"
+                    }}
+                >
+                    {footerList("Links", [
+                        {
+                            key: "librapidGitHub",
+                            title: "LibRapid GitHub",
+                            link: "https://github.com/LibRapid/librapid/"
+                        },
+                        {
+                            key: "discord",
+                            title: "LibRapid Discord",
+                            link: "https://discord.gg/cGxTFTgCAC"
+                        },
+                        {
+                            key: "devto",
+                            title: "Dev.to",
+                            link: "https://dev.to/pencilcaseman"
+                        },
+                        {
+                            key: "stackoverflow",
+                            title: "Stack Overflow",
+                            link: "https://stackoverflow.com/users/11564403/pencilcaseman"
+                        }
+                    ])
+                    }
+
+                    {footerList("Contact", [
+                        {
+                            key: "email",
+                            title: "Email Me",
+                            link: "mailto:pencilcaseman@gmail.com"
+                        },
+                        {
+                            key: "reddit",
+                            title: "Reddit",
+                            link: "https://www.reddit.com/user/Pencilcaseman12"
+                        },
+                        {
+                            key: "discord",
+                            title: "Discord",
+                            link: "https://discordapp.com/users/539900920763252743"
+                        },
+                        {
+                            key: "linkedin",
+                            title: "LinkedIn",
+                            link: "https://uk.linkedin.com/in/toby-davis-codes/"
+                        }
+                    ])
+                    }
+                </Flex>
+                <Box
+                    css={{
+                        "px": "$10",
+                        "@md": {
+                            px: "$56",
+                        },
+                    }}
+                >
+                    <Divider
+                        css={{
+                            mt: "$14",
+                            display: "flex",
+                            justifyContent: "center",
+                        }}
+                    />
+                    <Flex
+                        //   justify={"between"}
+                        align={"center"}
+                        wrap={"wrap"}
+                        css={{
+                            "pt": "$8",
+                            "gap": "$10",
+                            "justifyContent": "center",
+                            "@md": {
+                                justifyContent: "space-between",
+                            },
+                        }}
+                    >
+                        <Flex
+                            css={{
+                                gap: "$10",
+                            }}
+                            wrap={"wrap"}
+                        >
+                            {PenciLogo()}
+                        </Flex>
+                        <Flex
+                            css={{
+                                gap: "$6",
+                            }}
+                        >
+                            <Text span css={{color: "$accents8"}}>
+                                © Copyright {new Date().getFullYear().toString()} Toby Davis.
+                            </Text>
+                        </Flex>
+                    </Flex>
+                </Box>
             </Box>
-         </Box>
-      </Flex>
-   );
+        </Flex>
+    )
+        ;
 };

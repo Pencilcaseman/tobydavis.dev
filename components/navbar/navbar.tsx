@@ -1,13 +1,13 @@
-import {Button, Dropdown, Link, Navbar, Switch, Text, Image} from '@nextui-org/react';
-import React from 'react';
+import {Button, Dropdown, Link, Navbar, Switch, Text, Image} from "@nextui-org/react";
+import React from "react";
 import {useRouter} from "next/router";
 import {useState} from "react";
-import {ModalLogin} from '../modal';
-import {icons} from './icons';
-import {AcmeLogo} from './logo';
-import {useTheme as useNextTheme} from 'next-themes';
-import {useTheme} from '@nextui-org/react';
-import {GithubIcon} from '../icons/GithubIcon';
+import {ModalLogin} from "../modal";
+import {icons} from "../icons/icons";
+import {PenciLogo} from "../icons/logo";
+import {useTheme as useNextTheme} from "next-themes";
+import {useTheme} from "@nextui-org/react";
+import {GithubIcon} from "../icons/GithubIcon";
 
 interface DropdownElement {
     key: string;
@@ -57,6 +57,13 @@ const socials = [
         link: "https://github.com/Pencilcaseman/"
     },
     {
+        key: "discord",
+        title: "Discord",
+        description: "The LibRapid Discord server, where you can talk about anything programming related.",
+        icon: icons.discord,
+        link: "https://discord.gg/cGxTFTgCAC"
+    },
+    {
         key: "devto",
         title: "Dev.to",
         description: "My Dev.to profile with some articles and tutorials.",
@@ -76,6 +83,13 @@ const socials = [
         description: "My Stack Overflow profile with my questions and answers.",
         icon: icons.stackOverflow,
         link: "https://stackoverflow.com/users/11564403/pencilcaseman"
+    },
+    {
+        key: "midjourney",
+        title: "Midjourney",
+        description: "My Midjourney profile with AI-generated images, some of which are used on this website.",
+        icon: icons.midjourney,
+        link: "https://www.midjourney.com/app/users/84b4ba6f-22f0-4339-9812-dd1382ef4d9b/"
     }
 ]
 
@@ -162,11 +176,11 @@ export const Nav = () => {
     const {setTheme} = useNextTheme();
     const {isDark, type} = useTheme();
     const collapseItems = [
-        'Features',
-        'Customers',
-        'Pricing',
-        'Company',
-        'Legal',
+        "Projects",
+        "Tutorials",
+        "Articles",
+        "Photography",
+        "Socials",
     ];
     return (
         <Navbar
@@ -181,7 +195,7 @@ export const Nav = () => {
         >
             <Navbar.Brand>
                 <Navbar.Toggle aria-label="toggle navigation" showIn="xs"/>
-                <AcmeLogo/>
+                {PenciLogo()}
                 <Text b color="inherit" hideIn="xs">
                     Toby Davis
                 </Text>
@@ -194,12 +208,6 @@ export const Nav = () => {
                     {NavbarDropdownMenu("Projects", projects)}
                     {NavbarDropdownMenu("Tutorials", tutorials)}
                     {NavbarDropdownMenu("Socials", socials)}
-
-                    <Navbar.Link isActive href="#">
-                        Customers
-                    </Navbar.Link>
-                    <Navbar.Link href="#">Pricing</Navbar.Link>
-                    <Navbar.Link href="#">Company</Navbar.Link>
                 </Navbar.Content>
             </Navbar.Brand>
 
@@ -239,25 +247,6 @@ export const Nav = () => {
                 </Navbar.CollapseItem>
             </Navbar.Collapse>
             <Navbar.Content>
-                <ModalLogin/>
-
-                <Navbar.Item>
-                    <Button auto flat href="#">
-                        Start free trial
-                    </Button>
-                </Navbar.Item>
-                <Navbar.Item hideIn={'xs'}>
-                    <Link
-                        color="inherit"
-                        css={{
-                            minWidth: '100%',
-                        }}
-                        target="_blank"
-                        href="https://github.com/Siumauricio/landing-template-nextui"
-                    >
-                        <GithubIcon/>
-                    </Link>
-                </Navbar.Item>
                 <Navbar.Item hideIn={'xs'}>
                     <Switch
                         checked={isDark}
