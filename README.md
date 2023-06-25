@@ -1,49 +1,27 @@
-# NextJS and NextUI Landing Page Template
+# [tobydavis.dev](https://tobydavis.dev/)
 
-You can deploy here directly to vercel [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/Siumauricio/landing-template-nextui)
+A personal website built with [Next.js](https://nextjs.org/), [NextUI](https://nextui.org/)
+and [TypeScript](https://www.typescriptlang.org/).
 
-This is a template for NextJS and NextUI. 
+## Build and Run
 
-[NextJS](https://nextjs.org/) 
-[NextUI](https://nextui.org/)
-
-You can see the demo here: https://landing-template-nextui.vercel.app/
-For improve this template, you can create a pull request or open an issue here [Issues](https://github.com/Siumauricio/landing-template-nextui/issues) or [Pull Request](
-    https://github.com/Siumauricio/landing-template-nextui/pulls)
-
-### Dark Mode
-![Landing Page Dark Mode](./public/Screenshot_2.png)
-
-### Light Mode
-![Landing Page Light Mode](./public/Screenshot_3.png)
-
-- Hero Section
-- Features Section 1
-- Features Section 2
-- Features Section 3
-- Testimonials Section
-- CTA Section
-- Pricing Section
-- FAQ Section
-- Footer Section
-- Dark Mode Support
-- Full Responsive
-
-## For Run
-
-Install dependencies
-
-    
 ```bash
-npm install
+npm i
+npm run build
+npm run start
 ```
 
-Start the server
+## Development
 
-    
-        
 ```bash
+npm i
 npm run dev
 ```
 
-Now you can visit https://localhost:3000 in your browser.
+## Using My Stuff
+
+While you can use my code in your own projects, I would prefer it if you'd credit me and link back to my website. That
+way, more people can find my work and hopefully benefit from it. Thanks!
+
+If you do choose to use my code, I'd love to hear what you create with it. Feel free to reach out to me on the
+[LibRapid Discord Server](https://discord.gg/cGxTFTgCAC) or create an Issue on GitHub.
