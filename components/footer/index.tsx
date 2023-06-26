@@ -95,7 +95,7 @@ export const Footer = () => {
                     {footerList("Contact", [
                         {
                             key: "email",
-                            title: "Email Me",
+                            title: "Email",
                             link: "mailto:pencilcaseman@gmail.com"
                         },
                         {

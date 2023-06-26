@@ -13,9 +13,11 @@ import {Faq} from '../components/faq';
 import {Trial} from '../components/trial';
 import {Footer} from '../components/footer';
 import {Flex} from "../components/styles/flex";
-import {Button, Divider, Image, Input, Text} from "@nextui-org/react";
+import {Button, Divider, Image, Input, Link, Text} from "@nextui-org/react";
 import {CheckIcon} from "../components/icons/CheckIcon";
 import React from "react";
+
+import {ArticleCard} from "../components/article/card";
 
 const Home: NextPage = () => {
     return (
@@ -85,7 +87,15 @@ const Home: NextPage = () => {
                                 }}
                                 color="primary"
                             >
-                                {"machine learning."}
+                                {"machine learning"}
+                            </Text>
+                            <Text
+                                h1
+                                css={{
+                                    display: 'inline',
+                                }}
+                            >
+                                {"."}
                             </Text>
                         </Box>
 
@@ -121,6 +131,271 @@ const Home: NextPage = () => {
                         />
                     </Box>
                 </Flex>
+
+                <Flex
+                    direction={"column"}
+                    align={"center"}
+                    css={{
+                        gap: "$10",
+                        pt: "$20",
+                    }}
+                >
+
+                    <Text
+                        h2
+                        css={{
+                            textColor: "red",
+                            display: "inline",
+                            fontWeight: "$semibold",
+                        }}
+                    >
+                        Hello, World!
+                    </Text>
+
+                    <ArticleCard
+                        width={800}
+                        height={600}
+                        title={"Test Title"}
+                        description={"Test Description but it's really long to test how the card wraps text and to see whether the little grey box expands to fit the description"}
+                        tags={[
+                            "LibRapid",
+                            "High Performance Computing",
+                            "POO POO HEAD"
+                        ]
+                        }
+                        image={"https://cdn.midjourney.com/57ec6897-7075-402a-93d1-0383de532eea/0_1.png"}
+                        link={"https://google.com"}
+                    />
+
+                    <ArticleCard
+                        width={300}
+                        height={300}
+                        title={"Test Title"}
+                        description={"Test Description but it's really long to test how the card wraps text and to see whether the little grey box expands to fit the description"}
+                        tags={[
+                            "LibRapid",
+                            "High Performance Computing",
+                            "Machine Learning",
+                            "Mathematics",
+                            "C++",
+                            "Python",
+                            "Java",
+                            "Javascript"
+                        ]
+                        }
+                        image={"https://www.freecodecamp.org/news/content/images/2022/12/main-image.png"}
+                        link={"https://google.com"}
+                    />
+
+                    <ArticleCard
+                        width={300}
+                        height={300}
+                        title={"Test Title"}
+                        tags={[
+                            "LibRapid",
+                            "HPC",
+                            "ML",
+                            "C++"
+                        ]
+                        }
+                        image={"https://cdn.midjourney.com/4e4e8e90-b402-439f-8094-9a502b6f225f/0_3.png"}
+                        link={"https://google.com"}
+                    />
+
+                </Flex>
+
+                <Flex
+                    direction={"column"}
+                    align={"center"}
+                    css={{
+                        pt: "$20",
+                        gap: "$10",
+                    }}
+                >
+                    <Flex
+                        direction={"column"}
+                        align={"center"}
+                        css={{
+                            gap: "$10",
+                        }}
+                    >
+                        <Text
+                            h2
+                            css={{
+                                display: "inline",
+                                fontWeight: "$semibold",
+                            }}
+                        >
+                            About Me
+                        </Text>
+
+                        <Box css={{
+                            mw: "800px",
+                        }}>
+                            <Text
+                                h3
+                                css={{
+                                    display: "inline",
+                                    fontWeight: "$semibold",
+                                }}
+                            >
+                                The Early Days
+                            </Text>
+
+                            <Text
+                                css={{
+                                    color: "$accents8",
+                                    fontSize: "16pt"
+                                }}
+                            >
+                                I first started programming in Scratch many years ago, where I made a few simple games
+                                and animations. At some point I moved on to Python, where I learned to write more
+                                complex programs. Wanting to visualise the things I made, I learned Processing and spent
+                                a huge amount of time writing games, simulations, animations and more.
+                            </Text>
+                        </Box>
+
+                        <Box css={{
+                            mw: "800px",
+                        }}>
+                            <Text
+                                h3
+                                css={{
+                                    display: "inline",
+                                    fontWeight: "$semibold",
+                                }}
+                            >
+                                Machine Learning?
+                            </Text>
+
+                            <Text
+                                css={{
+                                    color: "$accents8",
+                                    fontSize: "16pt"
+                                }}
+                            >
+                                At some point in my programming journey, I found
+                                <Link
+                                    href={"https://youtu.be/BOZfhUcNiqk"}
+                                    css={{
+                                        display: "inline",
+                                    }}>
+                                    {" a video "}
+                                </Link>
+                                by
+                                <Link
+                                    href={"https://www.youtube.com/@CodeBullet"}
+                                    css={{
+                                        display: "inline"
+                                    }}>
+                                    {" Code Bullet "}
+                                </Link>
+                                where he made a very simple genetic algorithm to teach dots how to find a target. After
+                                watching the video repeatedly, I attempted to recreate the algorithms myself.
+                            </Text>
+                        </Box>
+
+                        <Box css={{
+                            mw: "800px",
+                        }}>
+                            <Text
+                                css={{
+                                    color: "$accents8",
+                                    fontSize: "16pt"
+                                }}
+                            >
+                                After a couple failed attempts, I finally managed to create my very first machine
+                                learning program. That was the moment I fell in love with machine learning. I spent
+                                countless hours learning about supervised and unsupervised learning methods, writing my
+                                own neural network libraries and creating more advanced and powerful programs.
+                            </Text>
+                        </Box>
+
+                        <Box css={{
+                            mw: "800px",
+                        }}>
+                            <Text
+                                css={{
+                                    color: "$accents8",
+                                    fontSize: "16pt"
+                                }}
+                            >
+                                My favourite project was a simple self-driving car that I developed. A car would cast
+                                rays out in multiple directions, receiving information about the distance to the nearest
+                                wall. This information was passed into a neural network which determined whether the car
+                                would accelerate, decelerate, turn left or turn right.
+                            </Text>
+                        </Box>
+
+                        <Box css={{
+                            mw: "800px",
+                        }}>
+                            <Text
+                                css={{
+                                    color: "$accents8",
+                                    fontSize: "16pt"
+                                }}
+                            >
+                                After a considerable amount of time waiting for the inefficient program to train, I was
+                                left with a car that could drift around corners and complete the track perfectly.
+                            </Text>
+                        </Box>
+
+                        <Box css={{
+                            mw: "800px",
+                        }}>
+                            <Text
+                                h3
+                                css={{
+                                    display: "inline",
+                                    fontWeight: "$semibold",
+                                }}
+                            >
+                                Speed and Power
+                            </Text>
+
+                            <Text
+                                css={{
+                                    color: "$accents8",
+                                    fontSize: "16pt"
+                                }}
+                            >
+                                Soon, I realised that the programs I was writing were too inefficient to be practical
+                                for larger projects, so I started to learn C, which proved to be a bit more difficult
+                                than I had anticipated. After a day or two of failing to fix countless bugs, I gave up
+                                and moved on to C++, which I found significantly easier to learn.
+                            </Text>
+                        </Box>
+
+                        <Box css={{
+                            mw: "800px",
+                        }}>
+                            <Text
+                                css={{
+                                    color: "$accents8",
+                                    fontSize: "16pt"
+                                }}
+                            >
+                                Although I did eventually go back and learn C, C++ has become my favourite language to
+                                work in and I have developed a very good understanding of it. I&apos;ve developed a
+                                range of
+                                libraries and programs in C++; most notably,
+
+                                <Link
+                                    href={"https://github.com/LibRapid/librapid"}
+                                    css={{
+                                        display: "inline",
+                                    }}>
+                                    {" LibRapid "}
+                                </Link>
+
+                                , which is an incredibly fast, open-source linear algebra library I have been working on
+                                for a while now.
+                            </Text>
+                        </Box>
+                    </Flex>
+                </Flex>
+
                 <Divider
                     css={{position: 'absolute', inset: '0p', left: '0', mt: '$10'}}
                 />
