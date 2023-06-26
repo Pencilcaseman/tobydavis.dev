@@ -114,7 +114,7 @@ export const ArticleCard = (props: ArticleCardProps = {
                         alt="Card Image"
                     />
                 </Card.Body>
-                {footerIfRequired(props.description, props.width ?? 500, props.height ?? 350)}
+                {footerIfRequired(props.description ?? "", props.width ?? 500, props.height ?? 350)}
             </Card>
         </Box>
     )
