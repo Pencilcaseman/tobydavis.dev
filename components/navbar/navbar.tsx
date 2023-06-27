@@ -187,7 +187,6 @@ function NavbarCollapseMenu(props: NavbarDropdownMenuProps) {
                         fontWeight: "$semibold",
                         fontSize: "18pt",
                     }}
-                    href="#"
                 >
                     {props.label}
                 </Text>
@@ -200,7 +199,7 @@ function NavbarCollapseMenu(props: NavbarDropdownMenuProps) {
                         css={{
                             minWidth: "100%",
                         }}
-                        href={element.link}
+                        ref={element.link}
                     >
                         {"--> " + element.title}
                     </Link>
