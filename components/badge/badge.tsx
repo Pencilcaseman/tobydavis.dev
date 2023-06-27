@@ -104,19 +104,14 @@ const badgeDefaults = [
             "ts"
         ],
         color: "#6495ED"
-    },
-    {
-        text: [
-            "poo poo head"
-        ],
-        color: "#DA453E"
     }
 ];
 
 export const Badge = (props: BadgeProps) => {
-    let color = props.color ?? "#000000";
+    const defaultColor = "#1b9817";
+    let color = props.color ?? defaultColor;
 
-    if (color === "#000000") {
+    if (color === defaultColor) {
         for (let badge of badgeDefaults) {
             if (badge.text.includes(props.text?.toLowerCase() ?? "")) {
                 color = badge.color;

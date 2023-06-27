@@ -251,7 +251,7 @@ export const Nav = () => {
                 </Navbar.Content>
             </Navbar.Brand>
 
-            <Navbar.Collapse transitionTime={0}>
+            <Navbar.Collapse transitionTime={0} showIn={"xs"}>
                 <Navbar.CollapseItem>
                     <Switch
                         checked={isDark}
@@ -265,6 +265,7 @@ export const Nav = () => {
                 <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
                 <NavbarCollapseMenu label={"Socials"} elements={socials}/>
             </Navbar.Collapse>
+
             <Navbar.Content>
                 <Navbar.Item hideIn={"xs"}>
                     <Switch

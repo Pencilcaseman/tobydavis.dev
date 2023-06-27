@@ -186,7 +186,6 @@ const Home: NextPage = () => {
                                     tags={[
                                         "LibRapid",
                                         "High Performance Computing",
-                                        "POO POO HEAD"
                                     ]
                                     }
                                     image={"https://cdn.midjourney.com/57ec6897-7075-402a-93d1-0383de532eea/0_1.png"}
