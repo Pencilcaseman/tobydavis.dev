@@ -27,19 +27,19 @@ const Home: NextPage = () => {
 
                 <Flex
                     css={{
-                        'gap': '$3',
-                        'px': '$6',
-                        'flexDirection': 'column',
-                        'alignContent': 'center',
-                        'justifyContent': 'center',
-                        'alignItems': 'center',
-                        'width': '100%',
-                        '@sm': {
-                            flexDirection: 'row',
-                            mt: '$20',
+                        "gap": "$3",
+                        "px": "$6",
+                        "flexDirection": "column",
+                        "alignContent": "center",
+                        "justifyContent": "center",
+                        "alignItems": "center",
+                        "width": "100%",
+                        "@sm": {
+                            flexDirection: "row",
+                            mt: "$20",
                         },
                     }}
-                    justify={'center'}
+                    justify={"center"}
                 >
                     <Box
                         css={{
@@ -52,13 +52,13 @@ const Home: NextPage = () => {
                     >
                         <Box
                             css={{
-                                maxWidth: '600px',
+                                maxWidth: "600px",
                             }}
                         >
                             <Text
                                 h1
                                 css={{
-                                    display: 'inline',
+                                    display: "inline",
                                 }}
                             >
                                 {"Hi, I'm Toby Davis. I'm interested in "}
@@ -135,6 +135,7 @@ const Home: NextPage = () => {
                 <Flex
                     direction={"column"}
                     align={"center"}
+                    justify={"center"}
                     css={{
                         gap: "$10",
                         pt: "$20",
@@ -152,55 +153,49 @@ const Home: NextPage = () => {
                         Hello, World!
                     </Text>
 
-                    <ArticleCard
-                        width={800}
-                        height={600}
-                        title={"Test Title"}
-                        description={"Test Description but it's really long to test how the card wraps text and to see whether the little grey box expands to fit the description"}
-                        tags={[
-                            "LibRapid",
-                            "High Performance Computing",
-                            "POO POO HEAD"
-                        ]
-                        }
-                        image={"https://cdn.midjourney.com/57ec6897-7075-402a-93d1-0383de532eea/0_1.png"}
-                        link={"https://google.com"}
-                    />
+                    <Flex
+                        direction={"row"}
+                        align={"center"}
+                        justify={"center"}
+                        wrap={"wrap"}
+                        css={{
+                            gap: "$10",
+                            mw: "1500px"
+                        }}
+                        >
 
-                    <ArticleCard
-                        width={300}
-                        height={300}
-                        title={"Test Title"}
-                        description={"Test Description but it's really long to test how the card wraps text and to see whether the little grey box expands to fit the description"}
-                        tags={[
-                            "LibRapid",
-                            "High Performance Computing",
-                            "Machine Learning",
-                            "Mathematics",
-                            "C++",
-                            "Python",
-                            "Java",
-                            "Javascript"
-                        ]
+                        {
+                            [
+                                "Title 1",
+                                "Title 2",
+                                "Title 3",
+                                "Title 4",
+                                "Title 5",
+                                "Title 6",
+                                "Title 7",
+                                "Title 8",
+                                "Title 9",
+                                "Title 10",
+                            ].map((title) => (
+                                <ArticleCard
+                                    key={title}
+                                    width={300}
+                                    height={450}
+                                    title={title}
+                                    description={"Test Description but it's really long to test how the card wraps text and to see whether the little grey box expands to fit the description"}
+                                    tags={[
+                                        "LibRapid",
+                                        "High Performance Computing",
+                                        "POO POO HEAD"
+                                    ]
+                                    }
+                                    image={"https://cdn.midjourney.com/57ec6897-7075-402a-93d1-0383de532eea/0_1.png"}
+                                    link={"https://google.com"}
+                                />
+                            ))
                         }
-                        image={"https://www.freecodecamp.org/news/content/images/2022/12/main-image.png"}
-                        link={"https://google.com"}
-                    />
 
-                    <ArticleCard
-                        width={300}
-                        height={300}
-                        title={"Test Title"}
-                        tags={[
-                            "LibRapid",
-                            "HPC",
-                            "ML",
-                            "C++"
-                        ]
-                        }
-                        image={"https://cdn.midjourney.com/4e4e8e90-b402-439f-8094-9a502b6f225f/0_3.png"}
-                        link={"https://google.com"}
-                    />
+                    </Flex>
 
                 </Flex>
 

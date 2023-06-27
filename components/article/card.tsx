@@ -14,7 +14,7 @@ function textShortener(text: string, width: number, height: number) {
     }
 }
 
-function footerIfRequired(description: string, width: number, height: number) {
+function footerIfRequired(description: string, width: number | string, height: number | string) {
     if ((description?.length ?? 0) == 0) {
         return (
             <></>
@@ -37,7 +37,7 @@ function footerIfRequired(description: string, width: number, height: number) {
                 fontSize: "14pt",
                 fontWeight: "semibold",
             }}>
-                {textShortener(description, width, height)}
+                {description}
             </Text>
         </Card.Footer>
     )
@@ -48,8 +48,8 @@ interface ArticleCardProps {
     description?: string;
     icon?: React.ReactNode;
     image?: string;
-    width?: number;
-    height?: number;
+    width?: number | string;
+    height?: number | string;
     link?: string;
     tags?: string[];
 }

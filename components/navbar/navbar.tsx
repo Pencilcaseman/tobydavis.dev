@@ -103,7 +103,12 @@ const tutorials: DropdownElement[] = [
     },
 ];
 
-function NavbarDropdownMenu(label: string, elements: DropdownElement[]) {
+interface NavbarDropdownMenuProps {
+    label: string;
+    elements: DropdownElement[];
+}
+
+function NavbarDropdownMenu(props: NavbarDropdownMenuProps) {
     let router = useRouter();
     const [selectedKey, setSelectedKey] = useState();
 
@@ -115,34 +120,34 @@ function NavbarDropdownMenu(label: string, elements: DropdownElement[]) {
                     light
                     css={{
                         px: 0,
-                        dflex: 'center',
-                        svg: {pe: 'none'},
+                        dflex: "center",
+                        svg: {pe: "none"},
                     }}
                     iconRight={icons.chevron}
                     ripple={false}
                 >
-                    {label}
+                    {props.label}
                 </Dropdown.Button>
             </Navbar.Item>
             <Dropdown.Menu
-                aria-label={label}
+                aria-label={props.label}
                 css={{
                     "$$dropdownMenuWidth": "340px",
                     "$$dropdownItemHeight": "70px",
                     "& .nextui-dropdown-item": {
-                        "py": '$4',
+                        "py": "$4",
                         "svg": {
                             color: "$secondary",
                             mr: "$4",
                         },
                         "& .nextui-dropdown-item-content": {
-                            w: '100%',
+                            w: "100%",
                             fontWeight: "$semibold",
                         },
                     },
                 }}
                 onAction={(item) => {
-                    elements.forEach((element) => {
+                    props.elements.forEach((element) => {
                         if (element.key == item) {
                             if (element.link) {
                                 if (element.link.startsWith("http")) {
@@ -157,7 +162,7 @@ function NavbarDropdownMenu(label: string, elements: DropdownElement[]) {
                     })
                 }}
             >
-                {elements.map((element) => (
+                {props.elements.map((element) => (
                     <Dropdown.Item
                         key={element.key}
                         showFullDescription
@@ -169,6 +174,40 @@ function NavbarDropdownMenu(label: string, elements: DropdownElement[]) {
                 ))}
             </Dropdown.Menu>
         </Dropdown>
+    )
+}
+
+function NavbarCollapseMenu(props: NavbarDropdownMenuProps) {
+    return (
+        <>
+            <Navbar.CollapseItem>
+                <Text
+                    color="$primary"
+                    css={{
+                        fontWeight: "$semibold",
+                        fontSize: "18pt",
+                    }}
+                    href="#"
+                >
+                    {props.label}
+                </Text>
+            </Navbar.CollapseItem>
+
+            {props.elements.map((element) => (
+                <Navbar.CollapseItem>
+                    <Link
+                        color="inherit"
+                        css={{
+                            minWidth: "100%",
+                        }}
+                        href={element.link}
+                    >
+                        {"--> " + element.title}
+                    </Link>
+                </Navbar.CollapseItem>
+            ))}
+
+        </>
     )
 }
 
@@ -186,10 +225,10 @@ export const Nav = () => {
         <Navbar
             isBordered
             css={{
-                'overflow': 'hidden',
-                '& .nextui-navbar-container': {
-                    background: '$background',
-                    borderBottom: 'none',
+                "overflow": "hidden",
+                "& .nextui-navbar-container": {
+                    background: "$background",
+                    borderBottom: "none",
                 },
             }}
         >
@@ -202,56 +241,37 @@ export const Nav = () => {
                 <Navbar.Content
                     hideIn="sm"
                     css={{
-                        pl: '6rem',
+                        pl: "6rem",
                     }}
                 >
-                    {NavbarDropdownMenu("Projects", projects)}
-                    {NavbarDropdownMenu("Tutorials", tutorials)}
-                    {NavbarDropdownMenu("Socials", socials)}
+
+                    <NavbarDropdownMenu label={"Projects"} elements={projects}/>
+                    <NavbarDropdownMenu label={"Tutorials"} elements={tutorials}/>
+                    <NavbarDropdownMenu label={"Socials"} elements={socials}/>
+
                 </Navbar.Content>
             </Navbar.Brand>
 
-            <Navbar.Collapse>
-                {collapseItems.map((item, index) => (
-                    <Navbar.CollapseItem key={item}>
-                        <Link
-                            color="inherit"
-                            css={{
-                                minWidth: '100%',
-                            }}
-                            href="#"
-                        >
-                            {item}
-                        </Link>
-                    </Navbar.CollapseItem>
-                ))}
-                <Navbar.CollapseItem>
-                    <Link
-                        color="inherit"
-                        css={{
-                            minWidth: '100%',
-                        }}
-                        target="_blank"
-                        href="https://github.com/Siumauricio/landing-template-nextui"
-                    >
-                        <GithubIcon/>
-                    </Link>
-                </Navbar.CollapseItem>
+            <Navbar.Collapse transitionTime={0}>
                 <Navbar.CollapseItem>
                     <Switch
                         checked={isDark}
                         onChange={(e) =>
-                            setTheme(e.target.checked ? 'dark' : 'light')
+                            setTheme(e.target.checked ? "dark" : "light")
                         }
                     />
                 </Navbar.CollapseItem>
+
+                <NavbarCollapseMenu label={"Projects"} elements={projects}/>
+                <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
+                <NavbarCollapseMenu label={"Socials"} elements={socials}/>
             </Navbar.Collapse>
             <Navbar.Content>
-                <Navbar.Item hideIn={'xs'}>
+                <Navbar.Item hideIn={"xs"}>
                     <Switch
                         checked={isDark}
                         onChange={(e) =>
-                            setTheme(e.target.checked ? 'dark' : 'light')
+                            setTheme(e.target.checked ? "dark" : "light")
                         }
                     />
                 </Navbar.Item>
