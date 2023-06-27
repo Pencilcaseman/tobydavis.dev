@@ -199,7 +199,7 @@ function NavbarCollapseMenu(props: NavbarDropdownMenuProps) {
                         css={{
                             minWidth: "100%",
                         }}
-                        ref={element.link}
+                        href={element.link}
                     >
                         {"--> " + element.title}
                     </Link>
