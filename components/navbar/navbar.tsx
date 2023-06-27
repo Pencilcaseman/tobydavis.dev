@@ -194,7 +194,7 @@ function NavbarCollapseMenu(props: NavbarDropdownMenuProps) {
             </Navbar.CollapseItem>
 
             {props.elements.map((element) => (
-                <Navbar.CollapseItem>
+                <Navbar.CollapseItem key={element.title}>
                     <Link
                         color="inherit"
                         css={{
