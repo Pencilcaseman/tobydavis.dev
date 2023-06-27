@@ -15,7 +15,7 @@ function textShortener(text: string, width: number, height: number) {
 }
 
 function footerIfRequired(description: string, width: number, height: number) {
-    if (description?.length ?? 0 === 0) {
+    if ((description?.length ?? 0) == 0) {
         return (
             <></>
         )
