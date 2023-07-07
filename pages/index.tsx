@@ -16,12 +16,20 @@ import {Flex} from "../components/styles/flex";
 import {Button, Divider, Image, Input, Link, Text} from "@nextui-org/react";
 import {CheckIcon} from "../components/icons/CheckIcon";
 import React from "react";
-
+import {OpenGraphTags} from "../components/meta/openGraphTags";
 import {ArticleCard} from "../components/article/card";
+
+const homeImage = "https://cdn.midjourney.com/1b7db196-f85b-4ebc-8c8a-a7f00924cb0a/0_2.png";
 
 const Home: NextPage = () => {
     return (
         <Layout>
+            <OpenGraphTags title={"Toby Davis - Home"}
+                           description={"I'm Toby Davis, a software engineer and designer. I'm interested in high-performance computing, machine learning and more."}
+                           url={"https://tobydavis.dev"}
+                           image={homeImage}
+            />
+
             <Nav/>
             <Box as="main">
 
@@ -120,7 +128,7 @@ const Home: NextPage = () => {
                         }}
                     >
                         <img
-                            src="https://cdn.midjourney.com/1b7db196-f85b-4ebc-8c8a-a7f00924cb0a/0_2.png"
+                            src={homeImage}
                             alt="Image"
                             style={{
                                 borderRadius: "50px",
@@ -162,7 +170,7 @@ const Home: NextPage = () => {
                             gap: "$10",
                             mw: "1500px"
                         }}
-                        >
+                    >
 
                         {
                             [
@@ -195,7 +203,6 @@ const Home: NextPage = () => {
                         }
 
                     </Flex>
-
                 </Flex>
 
                 <Flex
