@@ -8,6 +8,7 @@ import {PenciLogo} from "../icons/logo";
 import {useTheme as useNextTheme} from "next-themes";
 import {useTheme} from "@nextui-org/react";
 import {GithubIcon} from "../icons/GithubIcon";
+import {Projects} from "../../content/projects/projects";
 
 interface DropdownElement {
     key: string;
@@ -16,37 +17,6 @@ interface DropdownElement {
     icon: React.ReactNode;
     link?: string;
 }
-
-const projects = [
-    {
-        key: "librapid",
-        title: "LibRapid",
-        description: "A high-performance C++ library for mathematics and linear algebra.",
-        icon: icons.flash,
-        link: "/projects/librapid"
-    },
-    {
-        key: "symbomath",
-        title: "SymboMath",
-        description: "A fast and powerful symbolic mathematics library and research project.",
-        icon: icons.rootX,
-        link: "/projects/symbomath"
-    },
-    {
-        key: "surge",
-        title: "Surge",
-        description: "A simple C++ graphics library for creative coding.",
-        icon: icons.scale,
-        link: "/projects/surge"
-    },
-    {
-        key: "machineLearning",
-        title: "Machine Learning",
-        description: "Experiments with machine learning and artificial intelligence.",
-        icon: icons.server,
-        link: "/projects/machineLearning"
-    },
-]
 
 const socials = [
     {
@@ -233,10 +203,15 @@ export const Nav = () => {
         >
             <Navbar.Brand>
                 <Navbar.Toggle aria-label="toggle navigation" showIn="xs"/>
-                {PenciLogo()}
-                <Text b color="inherit" hideIn="xs">
-                    Toby Davis
-                </Text>
+                <Link href={"/"} css={{
+                    color: "inherit",
+                }}>
+                    {PenciLogo()}
+                    <Text b color="inherit" hideIn="xs">
+                        Toby Davis
+                    </Text>
+                </Link>
+
                 <Navbar.Content
                     hideIn="sm"
                     css={{
@@ -244,7 +219,7 @@ export const Nav = () => {
                     }}
                 >
 
-                    <NavbarDropdownMenu label={"Projects"} elements={projects}/>
+                    <NavbarDropdownMenu label={"Projects"} elements={Projects()}/>
                     <NavbarDropdownMenu label={"Tutorials"} elements={tutorials}/>
                     <NavbarDropdownMenu label={"Socials"} elements={socials}/>
 
@@ -261,7 +236,7 @@ export const Nav = () => {
                     />
                 </Navbar.CollapseItem>
 
-                <NavbarCollapseMenu label={"Projects"} elements={projects}/>
+                <NavbarCollapseMenu label={"Projects"} elements={Projects()}/>
                 <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
                 <NavbarCollapseMenu label={"Socials"} elements={socials}/>
             </Navbar.Collapse>

@@ -7,7 +7,3 @@
 package.json,7\0\7030d0b2f71b999ff89a343de08c414af32fc93a
 9
 	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
-C
-pages/_document.tsx,a\d\ada43e48670fd1ae7318859ac38479e031ea9236
->
-pages/_app.tsx,5\5\550528cc072fa7d76d123e2f4303d4ab39daa8e8

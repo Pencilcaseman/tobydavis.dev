@@ -5,9 +5,10 @@ interface OpenGraphTagsProps {
     url?: string;
 }
 
-export const OpenGraphTags = (props: OpenGraphTagsProps) => {
+export const PageTag = (props: OpenGraphTagsProps) => {
     // Add open graph tags to the head of the page, as well as
     // twitter card tags.
+    // Also set the favicon and iOS app icon
 
     return (
         <>
@@ -20,6 +21,9 @@ export const OpenGraphTags = (props: OpenGraphTagsProps) => {
             <meta property="twitter:title" content={props.title}/>
             <meta property="twitter:description" content={props.description}/>
             <meta property="twitter:image" content={props.image}/>
+            
+            <link rel="icon" href="/public/favicon.ico"/>
+            <link rel="apple-touch-icon" href="/public/logo_dark.png"/>
         </>
     )
 }
