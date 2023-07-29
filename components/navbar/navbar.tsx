@@ -227,7 +227,7 @@ export const Nav = () => {
             </Navbar.Brand>
 
 
-            <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: 'auto', maxHeight: '50vh'}}>
+            <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: "auto", maxHeight: "90vh"}}>
                 <Navbar.CollapseItem>
                     <Switch
                         checked={isDark}
@@ -248,12 +248,6 @@ export const Nav = () => {
                             setTheme(e.target.checked ? "dark" : "light")
                         }
                     />
-                </Navbar.Item>
-
-                <Navbar.Item showIn={"xs"}>
-                    <Text>
-                        Extra Small
-                    </Text>
                 </Navbar.Item>
             </Navbar.Content>
         </Navbar>
