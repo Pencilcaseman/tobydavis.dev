@@ -227,21 +227,18 @@ export const Nav = () => {
             </Navbar.Brand>
 
 
+            <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: 'auto', maxHeight: '50vh'}}>
+                <Navbar.CollapseItem>
+                    <Switch
+                        checked={isDark}
+                        onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+                    />
+                </Navbar.CollapseItem>
 
-            <div style={{ overflow: 'auto', maxHeight: '100vh' }}>
-                <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: 'auto', maxHeight: '100vh'}}>
-                    <Navbar.CollapseItem>
-                        <Switch
-                            checked={isDark}
-                            onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
-                        />
-                    </Navbar.CollapseItem>
-
-                    <NavbarCollapseMenu label={"Projects"} elements={Projects()}/>
-                    <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
-                    <NavbarCollapseMenu label={"Socials"} elements={socials}/>
-                </Navbar.Collapse>
-            </div>
+                <NavbarCollapseMenu label={"Projects"} elements={Projects()}/>
+                <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
+                <NavbarCollapseMenu label={"Socials"} elements={socials}/>
+            </Navbar.Collapse>
 
             <Navbar.Content>
                 <Navbar.Item hideIn={"xs"}>
@@ -251,6 +248,12 @@ export const Nav = () => {
                             setTheme(e.target.checked ? "dark" : "light")
                         }
                     />
+                </Navbar.Item>
+
+                <Navbar.Item showIn={"xs"}>
+                    <Text>
+                        Extra Small
+                    </Text>
                 </Navbar.Item>
             </Navbar.Content>
         </Navbar>
