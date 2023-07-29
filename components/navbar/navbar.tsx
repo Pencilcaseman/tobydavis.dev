@@ -226,13 +226,11 @@ export const Nav = () => {
                 </Navbar.Content>
             </Navbar.Brand>
 
-            <Navbar.Collapse transitionTime={0} showIn={"xs"}>
+            <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: 'auto', maxHeight: '100vh'}}>
                 <Navbar.CollapseItem>
                     <Switch
                         checked={isDark}
-                        onChange={(e) =>
-                            setTheme(e.target.checked ? "dark" : "light")
-                        }
+                        onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
                     />
                 </Navbar.CollapseItem>
 
@@ -240,6 +238,7 @@ export const Nav = () => {
                 <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
                 <NavbarCollapseMenu label={"Socials"} elements={socials}/>
             </Navbar.Collapse>
+
 
             <Navbar.Content>
                 <Navbar.Item hideIn={"xs"}>
