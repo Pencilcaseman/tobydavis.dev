@@ -213,7 +213,7 @@ export const Nav = () => {
                 </Link>
 
                 <Navbar.Content
-                    hideIn="sm"
+                    hideIn="xs"
                     css={{
                         pl: "6rem",
                     }}
@@ -226,19 +226,22 @@ export const Nav = () => {
                 </Navbar.Content>
             </Navbar.Brand>
 
-            <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: 'auto', maxHeight: '100vh'}}>
-                <Navbar.CollapseItem>
-                    <Switch
-                        checked={isDark}
-                        onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
-                    />
-                </Navbar.CollapseItem>
 
-                <NavbarCollapseMenu label={"Projects"} elements={Projects()}/>
-                <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
-                <NavbarCollapseMenu label={"Socials"} elements={socials}/>
-            </Navbar.Collapse>
 
+            <div style={{ overflow: 'auto', maxHeight: '100vh' }}>
+                <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: 'auto', maxHeight: '100vh'}}>
+                    <Navbar.CollapseItem>
+                        <Switch
+                            checked={isDark}
+                            onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+                        />
+                    </Navbar.CollapseItem>
+
+                    <NavbarCollapseMenu label={"Projects"} elements={Projects()}/>
+                    <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
+                    <NavbarCollapseMenu label={"Socials"} elements={socials}/>
+                </Navbar.Collapse>
+            </div>
 
             <Navbar.Content>
                 <Navbar.Item hideIn={"xs"}>
