@@ -150,7 +150,10 @@ function NavbarDropdownMenu(props: NavbarDropdownMenuProps) {
 function NavbarCollapseMenu(props: NavbarDropdownMenuProps) {
     return (
         <>
-            <Navbar.CollapseItem>
+            <Navbar.CollapseItem style={{
+                paddingTop: "3pt",
+                paddingBottom: "0"
+            }}>
                 <Text
                     color="$primary"
                     css={{
@@ -163,7 +166,10 @@ function NavbarCollapseMenu(props: NavbarDropdownMenuProps) {
             </Navbar.CollapseItem>
 
             {props.elements.map((element) => (
-                <Navbar.CollapseItem key={element.title}>
+                <Navbar.CollapseItem key={element.title} style={{
+                    paddingTop: "2px",
+                    paddingBottom: "3pt",
+                }}>
                     <Link
                         color="inherit"
                         css={{
@@ -227,7 +233,7 @@ export const Nav = () => {
             </Navbar.Brand>
 
 
-            <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: "auto", maxHeight: "90vh"}}>
+            <Navbar.Collapse transitionTime={0} showIn={"xs"} style={{overflow: "auto", maxHeight: "85vh"}}>
                 <Navbar.CollapseItem>
                     <Switch
                         checked={isDark}
