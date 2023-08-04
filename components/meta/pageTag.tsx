@@ -1,5 +1,6 @@
 interface OpenGraphTagsProps {
-    title: string;
+    pageTitle?: string;
+    contentTitle?: string;
     description?: string;
     image?: string;
     url?: string;
@@ -12,16 +13,18 @@ export const PageTag = (props: OpenGraphTagsProps) => {
 
     return (
         <>
-            <meta property="og:title" content={props.title}/>
+            <title>{props.pageTitle ?? props.contentTitle ?? "Toby Davis -- C++ Developer"}</title>
+            <meta property="og:title" content={props.contentTitle ?? props.pageTitle ?? "Toby Davis -- C++ Developer"}/>
             <meta property="og:description" content={props.description}/>
             <meta property="og:image" content={props.image}/>
             <meta property="og:url" content={props.url}/>
             <meta property="og:type" content="website"/>
             <meta property="twitter:card" content="summary_large_image"/>
-            <meta property="twitter:title" content={props.title}/>
+            <meta property="twitter:title"
+                  content={props.contentTitle ?? props.pageTitle ?? "Toby Davis -- C++ Developer"}/>
             <meta property="twitter:description" content={props.description}/>
             <meta property="twitter:image" content={props.image}/>
-            
+
             <link rel="icon" href="/public/favicon.ico"/>
             <link rel="apple-touch-icon" href="/public/logo_dark.png"/>
         </>

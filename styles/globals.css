@@ -8,3 +8,23 @@ body {
 * {
    box-sizing: border-box;
 }
+
+.rounded-image-50 {
+   border-radius: 50px;
+}
+
+.rounded-image-40 {
+   border-radius: 50px;
+}
+
+.rounded-image-30 {
+   border-radius: 30px;
+}
+
+.rounded-image-20 {
+   border-radius: 20px;
+}
+
+.rounded-image-10 {
+   border-radius: 10px;
+}

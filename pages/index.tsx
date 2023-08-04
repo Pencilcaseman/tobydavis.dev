@@ -24,7 +24,8 @@ const homeImage = "https://cdn.midjourney.com/1b7db196-f85b-4ebc-8c8a-a7f00924cb
 const Home: NextPage = () => {
     return (
         <Layout>
-            <PageTag title={"Toby Davis - Home"}
+            <PageTag pageTitle={"Toby Davis -- C++ Programmer and Open Source Software Developer"}
+                     contentTitle={"Toby Davis - Home"}
                      description={"I'm Toby Davis, a software engineer and designer. I'm interested in high-performance computing, machine learning and more."}
                      url={"https://tobydavis.dev"}
                      image={homeImage}
@@ -127,15 +128,10 @@ const Home: NextPage = () => {
                             }
                         }}
                     >
-                        <img
+                        <Image
                             src={homeImage}
                             alt="Image"
-                            style={{
-                                borderRadius: "50px",
-                                width: "775px",
-                                height: "450px",
-                                objectFit: "cover",
-                            }}
+                            className="rounded-image-50"
                         />
                     </Box>
                 </Flex>
@@ -177,13 +173,7 @@ const Home: NextPage = () => {
                                 "Title 1",
                                 "Title 2",
                                 "Title 3",
-                                "Title 4",
-                                "Title 5",
-                                "Title 6",
-                                "Title 7",
-                                "Title 8",
-                                "Title 9",
-                                "Title 10",
+                                "Title 4"
                             ].map((title) => (
                                 <ArticleCard
                                     key={title}
