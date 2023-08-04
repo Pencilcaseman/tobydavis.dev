@@ -19,7 +19,7 @@ import React from "react";
 import {PageTag} from "../components/meta/pageTag";
 import {ArticleCard} from "../components/article/card";
 
-const homeImage = "https://cdn.midjourney.com/1b7db196-f85b-4ebc-8c8a-a7f00924cb0a/0_2.png";
+const homeImage = "/images/rayTracedBallsImage.jpg";
 
 const Home: NextPage = () => {
     return (
@@ -186,7 +186,7 @@ const Home: NextPage = () => {
                                         "High Performance Computing",
                                     ]
                                     }
-                                    image={"https://cdn.midjourney.com/57ec6897-7075-402a-93d1-0383de532eea/0_1.png"}
+                                    image={"/images/neuralNetworkInterpretation.jpg"}
                                     link={"https://google.com"}
                                 />
                             ))
