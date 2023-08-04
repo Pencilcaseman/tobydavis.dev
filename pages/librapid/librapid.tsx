@@ -24,7 +24,8 @@ const homeImage = "https://cdn.midjourney.com/34598f71-2e57-4c99-88c7-7addbccd09
 const Home: NextPage = () => {
     return (
         <Layout>
-            <PageTag title={"Toby Davis - Home"}
+            <PageTag pageTitle={"Toby Davis - Home"}
+                contentTitle={"Toby Davis - Home"}
                      description={"I'm Toby Davis, a software engineer and designer. I'm interested in high-performance computing, machine learning and more."}
                      url={"https://tobydavis.dev"}
                      image={homeImage}
