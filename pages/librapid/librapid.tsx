@@ -13,388 +13,246 @@ import {Faq} from '../../components/faq';
 import {Trial} from '../../components/trial';
 import {Footer} from '../../components/footer';
 import {Flex} from "../../components/styles/flex";
-import {Button, Divider, Image, Input, Link, Text} from "@nextui-org/react";
+import {Button, Divider, Image, Input, Link, Text, useTheme} from "@nextui-org/react";
 import {CheckIcon} from "../../components/icons/CheckIcon";
 import React from "react";
 import {PageTag} from "../../components/meta/pageTag";
 import {ArticleCard} from "../../components/article/card";
+import {useTheme as useNextTheme} from "next-themes";
 
-const homeImage = "https://cdn.midjourney.com/34598f71-2e57-4c99-88c7-7addbccd0934/0_2.png";
+const homeImageDark = "https://raw.githubusercontent.com/LibRapid/librapid_extras/master/branding/LibRapid_dark.png";
+const homeImageLight = "https://raw.githubusercontent.com/LibRapid/librapid_extras/master/branding/LibRapid_light.png";
 
 const Home: NextPage = () => {
+    const {setTheme} = useNextTheme();
+    const {isDark, type} = useTheme();
+
     return (
         <Layout>
-            <PageTag pageTitle={"Toby Davis - Home"}
-                contentTitle={"Toby Davis - Home"}
-                     description={"I'm Toby Davis, a software engineer and designer. I'm interested in high-performance computing, machine learning and more."}
-                     url={"https://tobydavis.dev"}
-                     image={homeImage}
+            <PageTag pageTitle={"Toby Davis - LibRapid"}
+                     contentTitle={"LibRapid for C++"}
+                     description={"LibRapid is a high-performance C++ library for machine learning, numerical computing and more."}
+                     url={"https://tobydavis.dev/librapid/librapid"}
+                     image={homeImageDark}
             />
 
             <Nav/>
-            <Box as="main">
 
-                <Flex
-                    css={{
-                        "gap": "$3",
-                        "px": "$6",
-                        "flexDirection": "column",
-                        "alignContent": "center",
-                        "justifyContent": "center",
-                        "alignItems": "center",
-                        "width": "100%",
-                        "@sm": {
-                            flexDirection: "row",
-                            mt: "$20",
-                        },
-                    }}
-                    justify={"center"}
-                >
-                    <Box
+            <Box as="main" css={{
+                height: "100%",
+                overflow: "auto"
+            }}>
+                <Flex css={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    height: "80vh",
+                }}>
+                    <Flex
                         css={{
-                            pt: '$13',
-
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '$5',
+                            "gap": "$10",
+                            "px": "$6",
+                            "flexDirection": "column",
+                            "alignContent": "center",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "width": "100%",
+                            "@sm": {
+                                flexDirection: "row",
+                                mt: "$20",
+                            },
                         }}
+                        justify={"center"}
                     >
                         <Box
                             css={{
-                                maxWidth: "600px",
+                                '& img': {
+                                    width: "850px",
+                                    objectFit: "contain",
+                                }
                             }}
                         >
-                            <Text
-                                h1
-                                css={{
-                                    display: "inline",
-                                }}
-                            >
-                                {"LIBRAPID LIBRAPID LIBRAPID "}
-                            </Text>
-                            <Text
-                                h1
-                                css={{
-                                    display: 'inline',
-                                }}
-                                color="primary"
-                            >
-                                {"LibRapid?"}
-                            </Text>
-                            <Text
-                                h1
-                                css={{
-                                    display: 'inline',
-                                }}
-                            >
-                                {" and "}
-                            </Text>
-                            <Text
-                                h1
-                                css={{
-                                    display: 'inline',
-                                }}
-                                color="primary"
-                            >
-                                {"LIBRAPID!!!!"}
-                            </Text>
-                            <Text
-                                h1
-                                css={{
-                                    display: 'inline',
-                                }}
-                            >
-                                {"."}
-                            </Text>
+                            <Link href={"https://github.com/LibRapid/librapid"} target={"_blank"}>
+                                <Image
+                                    src={isDark ? homeImageDark : homeImageLight}
+                                    alt="LibRapid Logo"
+
+                                />
+                            </Link>
                         </Box>
 
-                        <Text
-                            css={{
-                                color: '$accents8',
-                                maxWidth: '400px',
-                            }}
-                            size={'$lg'}
-                            span
-                        >
-                            {"I'm a self-taught programmer with a passion for writing fast and efficient \
-                            code. I am proficient in C++, Python, Javascript and many other languages."}
-                        </Text>
-                    </Box>
-                    <Box
-                        css={{
-                            '& img': {
-                                width: "775px",
-                                objectFit: "contain",
-                            }
-                        }}
-                    >
-                        <img
-                            src={homeImage}
-                            alt="Image"
-                            style={{
-                                borderRadius: "50px",
-                                width: "775px",
-                                height: "450px",
-                                objectFit: "cover",
-                            }}
-                        />
-                    </Box>
-                </Flex>
+                        <Flex direction={"column"}
+                              align={"center"}
+                              justify={"center"}
+                              css={{
+                                  pt: "$8",
+                                  minWidth: "550px",
+                              }}>
+                            <Link href={"#highPerformance"}>
+                                <Text h1 css={{
+                                    display: "inline",
+                                    textGradient: "45deg, $blue600 -20%, $pink600 75%",
+                                    fontWeight: "$bold"
+                                }}>
+                                    High-Performance C++
+                                </Text>
+                            </Link>
 
-                <Flex
-                    direction={"column"}
-                    align={"center"}
-                    justify={"center"}
-                    css={{
-                        gap: "$10",
-                        pt: "$20",
-                    }}
-                >
+                            <Link href={"#modernAPI"}>
+                                <Text h1 css={{
+                                    display: "inline",
+                                    textGradient: "120deg, $red600 -20%, $yellow600 80%",
+                                    fontWeight: "$bold"
+                                }}>
+                                    Intuitive, Modern API
+                                </Text>
+                            </Link>
 
-                    <Text
-                        h2
-                        css={{
-                            textColor: "red",
-                            display: "inline",
-                            fontWeight: "$semibold",
-                        }}
-                    >
-                        Hello, World!
-                    </Text>
+                            <Link href={"#crossPlatform"}>
+                                <Text h1 css={{
+                                    display: "inline",
+                                    textGradient: "45deg, $green600 -20%, $blue600 100%",
+                                    fontWeight: "$bold"
+                                }}>
+                                    Cross-Platform
+                                </Text>
+                            </Link>
 
-                    <Flex
-                        direction={"row"}
-                        align={"center"}
-                        justify={"center"}
-                        wrap={"wrap"}
-                        css={{
-                            gap: "$10",
-                            mw: "1500px"
-                        }}
-                    >
-
-                        {
-                            [
-                                "Title 1",
-                                "Title 2",
-                                "Title 3",
-                                "Title 4",
-                                "Title 5",
-                                "Title 6",
-                                "Title 7",
-                                "Title 8",
-                                "Title 9",
-                                "Title 10",
-                            ].map((title) => (
-                                <ArticleCard
-                                    key={title}
-                                    width={300}
-                                    height={450}
-                                    title={title}
-                                    description={"Test Description but it's really long to test how the card wraps text and to see whether the little grey box expands to fit the description"}
-                                    tags={[
-                                        "LibRapid",
-                                        "High Performance Computing",
-                                    ]
-                                    }
-                                    image={"https://cdn.midjourney.com/57ec6897-7075-402a-93d1-0383de532eea/0_1.png"}
-                                    link={"https://google.com"}
-                                />
-                            ))
-                        }
-
+                            <Link href={"#opensource"}>
+                                <Text h1 css={{
+                                    display: "inline",
+                                    textGradient: "120deg, $pink600 -20%, $red600 100%",
+                                    fontWeight: "$bold"
+                                }}>
+                                    Open-Source
+                                </Text>
+                            </Link>
+                        </Flex>
                     </Flex>
                 </Flex>
 
-                <Flex
-                    direction={"column"}
-                    align={"center"}
-                    css={{
+                <Flex css={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    pt: "$20",
+                }}>
+                    <Flex css={{
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
                         pt: "$20",
-                        gap: "$10",
-                    }}
-                >
-                    <Flex
-                        direction={"column"}
-                        align={"center"}
-                        css={{
-                            gap: "$10",
-                        }}
-                    >
-                        <Text
-                            h2
-                            css={{
-                                display: "inline",
-                                fontWeight: "$semibold",
-                            }}
-                        >
-                            About Me
+                        maxWidth: "75%",
+                    }}>
+                        <Text h1 id={"highPerformance"}>High-Performance C++</Text>
+
+                        <Text css={{
+                            fontSize: "18pt",
+                        }}>
+                            LibRapid is a high-performance C++ library for machine learning, numerical computing and
+                            more. Every aspect of LibRapid is designed with performance in mind, from the low-level
+                            algorithms to the high-level API.
+
+                            <br/><br/>
+
+                            LibRapid also supports OpenCL and CUDA backends, allowing you to run your code on GPUs,
+                            FPGAs and other accelerators. Changing the backend you want to use is as simple as adding a
+                            second template argument to the Array class. For
+                            example, <code>{"librapid::Array<float, librapid::Backend::CUDA>"}</code> will create an
+                            Array on the GPU, accelerated by CUDA. LibRapid can automatically detect OpenCL and CUDA on
+                            your system, so there is no need to spend hours configuring your build system.
+
+                            <br/><br/>
+
+                            Making efficient use of SIMD vectorization, multithreading and cache locality, LibRapid
+                            is capable of performing faster than many other popular libraries, including <Link
+                            href={"https://eigen.tuxfamily.org/"}>Eigen</Link> and <Link
+                            href={"https://github.com/xtensor-stack/xtensor"}>XTensor</Link>.
+
+                            <br/><br/>
+
+                            LibRapid also integrates nicely with BLAS libraries, such as <Link
+                            href={"https://github.com/xianyi/OpenBLAS"}>OpenBLAS</Link> and <Link
+                            href={"https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html"}>Intel&apos;s
+                            Math Kernel Library</Link>, for even greater performance. Additionally, these libraries are
+                            automatically detected by LibRapid&apos;s CMake build system, so you don&apos;t have to
+                            worry about configuring them yourself. LibRapid can even download pre-built OpenBLAS
+                            binaries for you, so you can get started right away without installing anything.
                         </Text>
 
-                        <Box css={{
-                            mw: "800px",
+                        <Text h1 id={"modernAPI"} css={{
+                            pt: "$20",
+                        }}>Intuitive, Modern API</Text>
+
+                        <Flex css={{
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "$8",
+
+                            "@md": {
+                                flexDirection: "row",
+                            }
                         }}>
-                            <Text
-                                h3
-                                css={{
-                                    display: "inline",
-                                    fontWeight: "$semibold",
-                                }}
-                            >
-                                The Early Days
-                            </Text>
+                            <Box>
+                                <Text css={{
+                                    fontSize: "18pt",
+                                    minWidth: "400px",
+                                }}>
+                                    LibRapid&apos;s API is designed to be as intuitive as possible, providing users with
+                                    a familiar experience. LibRapid uses expressive classes and functions, operator
+                                    overloading and compile-time function selection to ensure that your code is as
+                                    concise and readable as it can be.
 
-                            <Text
-                                css={{
-                                    color: "$accents8",
-                                    fontSize: "16pt"
-                                }}
-                            >
-                                I first started programming in Scratch many years ago, where I made a few simple games
-                                and animations. At some point I moved on to Python, where I learned to write more
-                                complex programs. Wanting to visualise the things I made, I learned Processing and spent
-                                a huge amount of time writing games, simulations, animations and more.
-                            </Text>
-                        </Box>
+                                    <br/><br/>
 
-                        <Box css={{
-                            mw: "800px",
+                                    LibRapid also folds combined operations into a single function call, reducing the
+                                    number of temporary objects created and improving performance. Even BLAS operations
+                                    are often folded into a single function call, eliminating the need for complex
+                                    functions like <code>gemm</code> and <code>gemv</code>.
+
+                                    <br/><br/>
+
+                                    Functions in LibRapid also work on a wide variety of types, including floating point
+                                    values, complex numbers, arrays, matrices, vectors and more. This allows you to
+                                    write generic code that works on any type of data without sacrificing performance.
+                                </Text>
+                            </Box>
+
+                            <Box>
+                                <Image src={"/images/simpleLibRapidExample.png"} alt={"LibRapid Example"} css={{
+                                    minWidth: "600px",
+                                }}/>
+                            </Box>
+                        </Flex>
+
+                        <Text h1 id={"crossPlatform"} css={{
+                            pt: "$20",
+                        }}>Cross-Platform</Text>
+
+                        <Text css={{
+                            fontSize: "18pt",
                         }}>
-                            <Text
-                                h3
-                                css={{
-                                    display: "inline",
-                                    fontWeight: "$semibold",
-                                }}
-                            >
-                                Machine Learning?
-                            </Text>
+                            LibRapid is designed to be cross-platform, and is tested on Windows, Linux and MacOS with
+                            GCC, Clang and MSVC. Every time code is pushed to the repository, LibRapid is compiled,
+                            tested and benchmarked on all of these platforms and compilers, ensuring that LibRapid is
+                            always working as expected.
+                        </Text>
 
-                            <Text
-                                css={{
-                                    color: "$accents8",
-                                    fontSize: "16pt"
-                                }}
-                            >
-                                At some point in my programming journey, I found
-                                <Link
-                                    href={"https://youtu.be/BOZfhUcNiqk"}
-                                    css={{
-                                        display: "inline",
-                                    }}>
-                                    {" a video "}
-                                </Link>
-                                by
-                                <Link
-                                    href={"https://www.youtube.com/@CodeBullet"}
-                                    css={{
-                                        display: "inline"
-                                    }}>
-                                    {" Code Bullet "}
-                                </Link>
-                                where he made a very simple genetic algorithm to teach dots how to find a target. After
-                                watching the video repeatedly, I attempted to recreate the algorithms myself.
-                            </Text>
-                        </Box>
+                        <Text h1 id={"openSource"} css={{
+                            pt: "$20",
+                        }}>Open Source</Text>
 
-                        <Box css={{
-                            mw: "800px",
+                        <Text css={{
+                            fontSize: "18pt",
                         }}>
-                            <Text
-                                css={{
-                                    color: "$accents8",
-                                    fontSize: "16pt"
-                                }}
-                            >
-                                After a couple failed attempts, I finally managed to create my very first machine
-                                learning program. That was the moment I fell in love with machine learning. I spent
-                                countless hours learning about supervised and unsupervised learning methods, writing my
-                                own neural network libraries and creating more advanced and powerful programs.
-                            </Text>
-                        </Box>
+                            LibRapid is completely open-source, and is licensed under the <Link
+                            href={"https://github.com/LibRapid/librapid/blob/master/LICENSE"} target={"_blank"}>MIT License</Link>, so you
+                            can use it in your personal and commercial projects without any restrictions.
 
-                        <Box css={{
-                            mw: "800px",
-                        }}>
-                            <Text
-                                css={{
-                                    color: "$accents8",
-                                    fontSize: "16pt"
-                                }}
-                            >
-                                My favourite project was a simple self-driving car that I developed. A car would cast
-                                rays out in multiple directions, receiving information about the distance to the nearest
-                                wall. This information was passed into a neural network which determined whether the car
-                                would accelerate, decelerate, turn left or turn right.
-                            </Text>
-                        </Box>
+                            <br/><br/>
 
-                        <Box css={{
-                            mw: "800px",
-                        }}>
-                            <Text
-                                css={{
-                                    color: "$accents8",
-                                    fontSize: "16pt"
-                                }}
-                            >
-                                After a considerable amount of time waiting for the inefficient program to train, I was
-                                left with a car that could drift around corners and complete the track perfectly.
-                            </Text>
-                        </Box>
-
-                        <Box css={{
-                            mw: "800px",
-                        }}>
-                            <Text
-                                h3
-                                css={{
-                                    display: "inline",
-                                    fontWeight: "$semibold",
-                                }}
-                            >
-                                Speed and Power
-                            </Text>
-
-                            <Text
-                                css={{
-                                    color: "$accents8",
-                                    fontSize: "16pt"
-                                }}
-                            >
-                                Soon, I realised that the programs I was writing were too inefficient to be practical
-                                for larger projects, so I started to learn C, which proved to be a bit more difficult
-                                than I had anticipated. After a day or two of failing to fix countless bugs, I gave up
-                                and moved on to C++, which I found significantly easier to learn.
-                            </Text>
-                        </Box>
-
-                        <Box css={{
-                            mw: "800px",
-                        }}>
-                            <Text
-                                css={{
-                                    color: "$accents8",
-                                    fontSize: "16pt"
-                                }}
-                            >
-                                Although I did eventually go back and learn C, C++ has become my favourite language to
-                                work in and I have developed a very good understanding of it. I&apos;ve developed a
-                                range of
-                                libraries and programs in C++; most notably,
-
-                                <Link
-                                    href={"https://github.com/LibRapid/librapid"}
-                                    css={{
-                                        display: "inline",
-                                    }}>
-                                    {" LibRapid "}
-                                </Link>
-
-                                , which is an incredibly fast, open-source linear algebra library I have been working on
-                                for a while now.
-                            </Text>
-                        </Box>
+                            Any contributions to LibRapid are greatly appreciated and allow me to continue improving the library. Donations are also welcome (though code contributions are preferred), and can be made via <Link href={"https://github.com/sponsors/Pencilcaseman"} target={"_blank"}>GitHub Sponsors</Link> or <Link href={"https://paypal.me/pencilcaseman?country.x=GB&locale.x=en_GB"} target={"_blank"}>PayPal</Link>.
+                        </Text>
                     </Flex>
                 </Flex>
 
@@ -404,7 +262,8 @@ const Home: NextPage = () => {
                 <Footer/>
             </Box>
         </Layout>
-    );
+    )
+        ;
 };
 
 export default Home;

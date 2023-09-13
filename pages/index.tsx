@@ -24,7 +24,7 @@ const homeImage = "/images/rayTracedBallsImage.jpg";
 const Home: NextPage = () => {
     return (
         <Layout>
-            <PageTag pageTitle={"Toby Davis -- C++ Programmer and Open Source Software Developer"}
+            <PageTag pageTitle={"Toby Davis' Website"}
                      contentTitle={"Toby Davis - Home"}
                      description={"I'm Toby Davis, a software engineer and designer. I'm interested in high-performance computing, machine learning and more."}
                      url={"https://tobydavis.dev"}
@@ -33,7 +33,6 @@ const Home: NextPage = () => {
 
             <Nav/>
             <Box as="main">
-
                 <Flex
                     css={{
                         "gap": "$3",
