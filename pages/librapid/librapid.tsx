@@ -86,6 +86,11 @@ const Home: NextPage = () => {
                               css={{
                                   pt: "$8",
                                   minWidth: "550px",
+
+                                  "@media (max-width: 768px)": {
+                                      flexWrap: "wrap",
+                                      minWidth: "0px",
+                                  },
                               }}>
                             <Link href={"#highPerformance"}>
                                 <Text h1 css={{
@@ -197,6 +202,10 @@ const Home: NextPage = () => {
                                 <Text css={{
                                     fontSize: "18pt",
                                     minWidth: "400px",
+
+                                    "@md": {
+                                        minWidth: "0px",
+                                    }
                                 }}>
                                     LibRapid&apos;s API is designed to be as intuitive as possible, providing users with
                                     a familiar experience. LibRapid uses expressive classes and functions, operator
@@ -221,6 +230,7 @@ const Home: NextPage = () => {
                             <Box>
                                 <Image src={"/images/simpleLibRapidExample.png"} alt={"LibRapid Example"} css={{
                                     minWidth: "600px",
+                                    maxWidth: "800px"
                                 }}/>
                             </Box>
                         </Flex>
@@ -246,12 +256,18 @@ const Home: NextPage = () => {
                             fontSize: "18pt",
                         }}>
                             LibRapid is completely open-source, and is licensed under the <Link
-                            href={"https://github.com/LibRapid/librapid/blob/master/LICENSE"} target={"_blank"}>MIT License</Link>, so you
+                            href={"https://github.com/LibRapid/librapid/blob/master/LICENSE"} target={"_blank"}>MIT
+                            License</Link>, so you
                             can use it in your personal and commercial projects without any restrictions.
 
                             <br/><br/>
 
-                            Any contributions to LibRapid are greatly appreciated and allow me to continue improving the library. Donations are also welcome (though code contributions are preferred), and can be made via <Link href={"https://github.com/sponsors/Pencilcaseman"} target={"_blank"}>GitHub Sponsors</Link> or <Link href={"https://paypal.me/pencilcaseman?country.x=GB&locale.x=en_GB"} target={"_blank"}>PayPal</Link>.
+                            Any contributions to LibRapid are greatly appreciated and allow me to continue improving the
+                            library. Donations are also welcome (though code contributions are preferred), and can be
+                            made via <Link href={"https://github.com/sponsors/Pencilcaseman"} target={"_blank"}>GitHub
+                            Sponsors</Link> or <Link
+                            href={"https://paypal.me/pencilcaseman?country.x=GB&locale.x=en_GB"}
+                            target={"_blank"}>PayPal</Link>.
                         </Text>
                     </Flex>
                 </Flex>
