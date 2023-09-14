@@ -23,6 +23,32 @@ import {useTheme as useNextTheme} from "next-themes";
 const homeImageDark = "https://raw.githubusercontent.com/LibRapid/librapid_extras/master/branding/LibRapid_dark.png";
 const homeImageLight = "https://raw.githubusercontent.com/LibRapid/librapid_extras/master/branding/LibRapid_light.png";
 
+interface FeatureProps {
+    text: string,
+    link?: string,
+    gradient?: string
+};
+
+const FeatureButton = ({text, link, gradient}: FeatureProps) => (
+    <Link href={link ?? ""}>
+        <Text css={{
+            display: "inline",
+            textGradient: gradient ?? "red",
+            fontWeight: "$bold",
+            fontSize: "38pt",
+
+            "@media (max-width: 550px)": {
+                fontSize: "28pt"
+            },
+            "@media (max-width: 415px)": {
+                fontSize: "22pt"
+            }
+        }}>
+            {text}
+        </Text>
+    </Link>
+)
+
 const Home: NextPage = () => {
     const {setTheme} = useNextTheme();
     const {isDark, type} = useTheme();
@@ -51,34 +77,27 @@ const Home: NextPage = () => {
                         css={{
                             "gap": "$10",
                             "px": "$6",
-                            "flexDirection": "column",
+                            "flexDirection": "row",
                             "alignContent": "center",
                             "justifyContent": "center",
                             "alignItems": "center",
                             "width": "100%",
-                            "@sm": {
-                                flexDirection: "row",
+                            "@media (max-width: 1160px)": {
+                                flexDirection: "column",
                                 mt: "$20",
                             },
                         }}
                         justify={"center"}
                     >
-                        <Box
-                            css={{
-                                '& img': {
-                                    width: "850px",
-                                    objectFit: "contain",
-                                }
-                            }}
-                        >
-                            <Link href={"https://github.com/LibRapid/librapid"} target={"_blank"}>
-                                <Image
-                                    src={isDark ? homeImageDark : homeImageLight}
-                                    alt="LibRapid Logo"
+                        <Link href={"https://github.com/LibRapid/librapid"} target={"_blank"} css={{
+                            maxWidth: "800px"
+                        }}>
+                            <Image
+                                src={isDark ? homeImageDark : homeImageLight}
+                                alt="LibRapid Logo"
 
-                                />
-                            </Link>
-                        </Box>
+                            />
+                        </Link>
 
                         <Flex direction={"column"}
                               align={"center"}
@@ -92,45 +111,11 @@ const Home: NextPage = () => {
                                       minWidth: "0px",
                                   },
                               }}>
-                            <Link href={"#highPerformance"}>
-                                <Text h1 css={{
-                                    display: "inline",
-                                    textGradient: "45deg, $blue600 -20%, $pink600 75%",
-                                    fontWeight: "$bold"
-                                }}>
-                                    High-Performance C++
-                                </Text>
-                            </Link>
 
-                            <Link href={"#modernAPI"}>
-                                <Text h1 css={{
-                                    display: "inline",
-                                    textGradient: "120deg, $red600 -20%, $yellow600 80%",
-                                    fontWeight: "$bold"
-                                }}>
-                                    Intuitive, Modern API
-                                </Text>
-                            </Link>
-
-                            <Link href={"#crossPlatform"}>
-                                <Text h1 css={{
-                                    display: "inline",
-                                    textGradient: "45deg, $green600 -20%, $blue600 100%",
-                                    fontWeight: "$bold"
-                                }}>
-                                    Cross-Platform
-                                </Text>
-                            </Link>
-
-                            <Link href={"#opensource"}>
-                                <Text h1 css={{
-                                    display: "inline",
-                                    textGradient: "120deg, $pink600 -20%, $red600 100%",
-                                    fontWeight: "$bold"
-                                }}>
-                                    Open-Source
-                                </Text>
-                            </Link>
+                            <FeatureButton text="High-Performance C++" link="#highPerformance" gradient="45deg, $blue600 -20%, $pink600 75%"/>
+                            <FeatureButton text="Intuitive, Modern API" link="#modernAPI" gradient="120deg, $red600 -20%, $yellow600 80%"/>
+                            <FeatureButton text="Cross-Platform" link="#crossPlatform" gradient="45deg, $green600 -20%, $blue600 100%"/>
+                            <FeatureButton text="Open-Source" link="#openSource" gradient="120deg, $pink600 -20%, $red600 100%"/>
                         </Flex>
                     </Flex>
                 </Flex>
@@ -146,7 +131,11 @@ const Home: NextPage = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         pt: "$20",
-                        maxWidth: "60%",
+                        maxWidth: "800px",
+
+                        "@media (max-width: 1280px)": {
+                            maxWidth: "60%"
+                        }
                     }}>
                         <Text h1 id={"highPerformance"}>High-Performance C++</Text>
 
