@@ -146,7 +146,7 @@ const Home: NextPage = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         pt: "$20",
-                        maxWidth: "75%",
+                        maxWidth: "60%",
                     }}>
                         <Text h1 id={"highPerformance"}>High-Performance C++</Text>
 
