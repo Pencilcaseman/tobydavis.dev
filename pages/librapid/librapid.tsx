@@ -177,52 +177,38 @@ const Home: NextPage = () => {
                             pt: "$20",
                         }}>Intuitive, Modern API</Text>
 
-                        <Flex css={{
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: "$8",
+                            <Text css={{
+                                fontSize: "18pt",
+                                minWidth: "400px",
 
-                            "@md": {
-                                flexDirection: "row",
-                            }
-                        }}>
-                            <Box>
-                                <Text css={{
-                                    fontSize: "18pt",
-                                    minWidth: "400px",
+                                "@md": {
+                                    minWidth: "0px",
+                                }
+                            }}>
+                                LibRapid&apos;s API is designed to be as intuitive as possible, providing users with
+                                a familiar experience. LibRapid uses expressive classes and functions, operator
+                                overloading and compile-time function selection to ensure that your code is as
+                                concise and readable as it can be.
 
-                                    "@md": {
-                                        minWidth: "0px",
-                                    }
-                                }}>
-                                    LibRapid&apos;s API is designed to be as intuitive as possible, providing users with
-                                    a familiar experience. LibRapid uses expressive classes and functions, operator
-                                    overloading and compile-time function selection to ensure that your code is as
-                                    concise and readable as it can be.
+                                <br/><br/>
 
-                                    <br/><br/>
+                                LibRapid also folds combined operations into a single function call, reducing the
+                                number of temporary objects created and improving performance. Even BLAS operations
+                                are often folded into a single function call, eliminating the need for complex
+                                functions like <code>gemm</code> and <code>gemv</code>.
 
-                                    LibRapid also folds combined operations into a single function call, reducing the
-                                    number of temporary objects created and improving performance. Even BLAS operations
-                                    are often folded into a single function call, eliminating the need for complex
-                                    functions like <code>gemm</code> and <code>gemv</code>.
+                                <br/><br/>
 
-                                    <br/><br/>
+                                Functions in LibRapid also work on a wide variety of types, including floating point
+                                values, complex numbers, arrays, matrices, vectors and more. This allows you to
+                                write generic code that works on any type of data without sacrificing performance.
+                            </Text>
 
-                                    Functions in LibRapid also work on a wide variety of types, including floating point
-                                    values, complex numbers, arrays, matrices, vectors and more. This allows you to
-                                    write generic code that works on any type of data without sacrificing performance.
-                                </Text>
-                            </Box>
-
-                            <Box>
-                                <Image src={"/images/simpleLibRapidExample.png"} alt={"LibRapid Example"} css={{
-                                    minWidth: "600px",
-                                    maxWidth: "800px"
-                                }}/>
-                            </Box>
-                        </Flex>
+                            <Image src={"/images/simpleLibRapidExample.png"} alt={"LibRapid Example"} css={{
+                                minWidth: "600px",
+                                maxWidth: "800px",
+                                pt: "$10"
+                            }}/>
 
                         <Text h1 id={"crossPlatform"} css={{
                             pt: "$20",
