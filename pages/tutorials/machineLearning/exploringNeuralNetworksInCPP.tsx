@@ -4,17 +4,12 @@ import {Layout} from '../../../components/navbar/layout';
 import {Box} from '../../../components/styles/box';
 import {Footer} from '../../../components/footer';
 import {Flex} from "../../../components/styles/flex";
-import {Button, Divider, Image, Input, Link, Text, useTheme} from "@nextui-org/react";
+import {Button, Divider, Text} from "@nextui-org/react";
 import React from "react";
 import {PageTag} from "../../../components/meta/pageTag";
-import {ArticleCard} from "../../../components/article/card";
-import {useTheme as useNextTheme} from "next-themes";
 
 
 const Home: NextPage = () => {
-    const {setTheme} = useNextTheme();
-    const {isDark, type} = useTheme();
-
     return (
         <Layout>
             <PageTag pageTitle={"Toby Davis - Exploring Neural Networks in C++"}
@@ -46,7 +41,7 @@ const Home: NextPage = () => {
                             maxWidth: "60%"
                         }
                     }}>
-                        <Text h1 id={"highPerformance"}>Exploring Machine Learning in C++</Text>
+                        <Text h1 id={"highPerformance"}>Exploring Neural Networks in C++</Text>
 
                         <Text css={{
                             fontSize: "16pt"

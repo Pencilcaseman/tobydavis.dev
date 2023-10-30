@@ -2,10 +2,10 @@ import {icons} from "../../components/icons/icons";
 
 export const Tutorials = () => ([
     {
-        key: "mlincpp",
-        title: "Exploring Machine Learning in C++",
-        description: "Learn about machine learning and how to implement it in C++.",
+        key: "machineLearning",
+        title: "Machine Learning",
+        description: "Articles, tutorials and projects about machine learning",
         icon: icons.machineLearning,
-        link: "/tutorials/tutorials"
+        link: "/tutorials/machineLearning/machineLearning"
     }
 ])
