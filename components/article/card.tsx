@@ -45,6 +45,7 @@ function footerIfRequired(description: string, width: number | string, height: n
 
 interface ArticleCardProps {
     title: string;
+    textColour?: string;
     description?: string;
     icon?: React.ReactNode;
     image?: string;
@@ -100,7 +101,7 @@ export const ArticleCard = (props: ArticleCardProps = {
                                 ))
                             }
                         </Flex>
-                        <Text h3 color="white">
+                        <Text h3 color={props.textColour ?? "white"}>
                             {props.title}
                         </Text>
                     </Col>

@@ -8,7 +8,9 @@ import {PenciLogo} from "../icons/logo";
 import {useTheme as useNextTheme} from "next-themes";
 import {useTheme} from "@nextui-org/react";
 import {GithubIcon} from "../icons/GithubIcon";
+
 import {Projects} from "../../content/projects/projects";
+import {Tutorials} from "../../content/tutorials/tutorials";
 
 interface DropdownElement {
     key: string;
@@ -65,10 +67,10 @@ const socials = [
 
 const tutorials: DropdownElement[] = [
     {
-        key: "example",
-        title: "example",
-        description: "example",
-        icon: icons.flash,
+        key: "mlincpp",
+        title: "Exploring Machine Learning in C++",
+        description: "Learn about machine learning and how to implement it in C++.",
+        icon: icons.machineLearning,
         link: "https://github.com/Pencilcaseman/"
     },
 ];
@@ -226,7 +228,7 @@ export const Nav = () => {
                 >
 
                     <NavbarDropdownMenu label={"Projects"} elements={Projects()}/>
-                    <NavbarDropdownMenu label={"Tutorials"} elements={tutorials}/>
+                    <NavbarDropdownMenu label={"Tutorials"} elements={Tutorials()}/>
                     <NavbarDropdownMenu label={"Socials"} elements={socials}/>
 
                 </Navbar.Content>
@@ -242,7 +244,7 @@ export const Nav = () => {
                 </Navbar.CollapseItem>
 
                 <NavbarCollapseMenu label={"Projects"} elements={Projects()}/>
-                <NavbarCollapseMenu label={"Tutorials"} elements={tutorials}/>
+                <NavbarCollapseMenu label={"Tutorials"} elements={Tutorials()}/>
                 <NavbarCollapseMenu label={"Socials"} elements={socials}/>
             </Navbar.Collapse>
 
