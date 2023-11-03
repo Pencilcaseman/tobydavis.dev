@@ -56,11 +56,9 @@ const Home: NextPage = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         pt: "$5",
+                        pl: "$12",
+                        pr: "$12",
                         maxWidth: "800px",
-
-                        "@media (max-width: 1280px)": {
-                            maxWidth: "60%"
-                        }
                     }}>
                         <Text h1 id={"highPerformance"}>Machine Learning Tutorials</Text>
 

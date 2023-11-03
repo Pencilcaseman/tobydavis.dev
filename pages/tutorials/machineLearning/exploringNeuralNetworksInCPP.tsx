@@ -8,7 +8,6 @@ import {Button, Divider, Text} from "@nextui-org/react";
 import React from "react";
 import {PageTag} from "../../../components/meta/pageTag";
 
-
 const Home: NextPage = () => {
     return (
         <Layout>
@@ -35,11 +34,9 @@ const Home: NextPage = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         pt: "$5",
-                        maxWidth: "800px",
-
-                        "@media (max-width: 1280px)": {
-                            maxWidth: "60%"
-                        }
+                        pl: "$12",
+                        pr: "$12",
+                        maxWidth: "800px"
                     }}>
                         <Text h1 id={"highPerformance"}>Exploring Neural Networks in C++</Text>
 

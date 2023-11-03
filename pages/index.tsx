@@ -37,6 +37,8 @@ const Home: NextPage = () => {
                     css={{
                         "gap": "$3",
                         "px": "$6",
+                        "pl": "$12",
+                        "pr": "$12",
                         "flexDirection": "column",
                         "alignContent": "center",
                         "justifyContent": "center",
@@ -142,6 +144,8 @@ const Home: NextPage = () => {
                     css={{
                         gap: "$10",
                         pt: "$20",
+                        pl: "$12",
+                        pr: "$12",
                     }}
                 >
 
@@ -200,6 +204,8 @@ const Home: NextPage = () => {
                     css={{
                         pt: "$20",
                         gap: "$10",
+                        pl: "$12",
+                        pr: "$12",
                     }}
                 >
                     <Flex
