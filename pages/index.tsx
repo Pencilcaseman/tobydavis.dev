@@ -152,12 +152,12 @@ const Home: NextPage = () => {
                     <Text
                         h2
                         css={{
-                            textColor: "red",
+			    color: "orange",
                             display: "inline",
                             fontWeight: "$semibold",
                         }}
                     >
-                        Hello, World!
+                        Hello, World! Sample Text.
                     </Text>
 
                     <Flex
