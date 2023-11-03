@@ -149,18 +149,7 @@ const Home: NextPage = () => {
                     }}
                 >
 
-                    <Text
-                        h2
-                        css={{
-			    color: "orange",
-                            display: "inline",
-                            fontWeight: "$semibold",
-                        }}
-                    >
-                        Hello, World! Sample Text.
-                    </Text>
-
-                    <Flex
+        	<Flex
                         direction={"row"}
                         align={"center"}
                         justify={"center"}
