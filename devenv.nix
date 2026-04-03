@@ -21,6 +21,7 @@ in
 
     dioxus-cli
     wasm-bindgen-cli
+    binaryen
 
     twiggy
 

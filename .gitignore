@@ -2,3 +2,6 @@
 
 .devenv/
 target/
+
+.superpowers/
+docs/superpowers

@@ -1,8 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap');
+
 body {
     background-color: #0f1116;
     color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'STIX Two Text', serif;
     margin: 20px;
+}
+
+#main-title {
+    font-size: 50pt;
 }
 
 #hero {
