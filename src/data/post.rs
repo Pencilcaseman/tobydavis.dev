@@ -95,16 +95,16 @@ fn render_markdown(_: &str) -> (String, Vec<TocEntry>) {
     (String::new(), Vec::new())
 }
 
-/// Single pass: insert id attributes on h2/h3 tags and extract ToC entries.
+/// Single pass: insert id attributes on heading tags (h1–h6) and extract ToC entries.
 #[cfg(feature = "server")]
 fn process_headings(html: &str) -> (String, Vec<TocEntry>) {
     let mut result = String::with_capacity(html.len());
     let mut toc = Vec::new();
     let mut rest = html;
 
-    while let Some(pos) = rest.find("<h2>").or_else(|| rest.find("<h3>")) {
-        let tag = if rest[pos..].starts_with("<h2>") { "h2" } else { "h3" };
-        let level = if tag == "h2" { 2 } else { 3 };
+    while let Some(pos) = find_next_heading(rest) {
+        let level = (rest.as_bytes()[pos + 2] - b'0') as u8;
+        let tag = format!("h{level}");
         let open = format!("<{tag}>");
         let close = format!("</{tag}>");
 
@@ -125,6 +125,24 @@ fn process_headings(html: &str) -> (String, Vec<TocEntry>) {
     }
     result.push_str(rest);
     (result, toc)
+}
+
+/// Find the next `<h1>` through `<h6>` tag (without attributes) in the string.
+#[cfg(feature = "server")]
+fn find_next_heading(s: &str) -> Option<usize> {
+    let bytes = s.as_bytes();
+    for i in 0..bytes.len().saturating_sub(3) {
+        if bytes[i] == b'<'
+            && bytes[i + 1] == b'h'
+            && bytes[i + 2].is_ascii_digit()
+            && bytes[i + 2] >= b'1'
+            && bytes[i + 2] <= b'6'
+            && bytes[i + 3] == b'>'
+        {
+            return Some(i);
+        }
+    }
+    None
 }
 
 #[cfg(feature = "server")]

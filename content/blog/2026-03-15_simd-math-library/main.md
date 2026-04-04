@@ -1,3 +1,5 @@
+# This Is a Heading
+
 Modern CPUs ship with powerful SIMD instruction sets --- AVX2, AVX-512, NEON --- but writing portable vectorized code remains painful. A single operation like a fused multiply-add might need three completely different implementations across x86, ARM, and fallback scalar paths.
 
 In this post, we'll walk through the design of a math library that abstracts over these backends while maintaining zero-cost performance.
@@ -35,6 +37,10 @@ vst1q_f32(&out[i], vc);
 ```
 
 Same semantics, different syntax. This is the core insight that makes abstraction possible.
+
+### This Is a Smaller Heading
+
+Hello!
 
 ## The Abstraction Layer
 

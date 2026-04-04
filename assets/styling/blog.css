@@ -84,8 +84,7 @@
     border-left-color: var(--accent);
 }
 
-.toc-item.toc-h3 {
-    padding-left: 24px;
+.toc-item.toc-child {
     font-size: 12px;
     max-height: 0;
     overflow: hidden;
@@ -95,7 +94,7 @@
     transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
 }
 
-.toc-item.toc-h3.visible {
+.toc-item.toc-child.visible {
     max-height: 40px;
     opacity: 1;
     padding-top: 4px;
@@ -165,7 +164,7 @@
         padding: 16px;
     }
 
-    .toc-item.toc-h3 {
+    .toc-item.toc-child {
         max-height: 40px;
         opacity: 1;
         padding-top: 4px;
