@@ -1,0 +1,6 @@
+title = "Zero-Cost Abstractions in Practice"
+slug = "zero-cost-abstractions"
+description = "When the compiler is smarter than you"
+date = 2026-01-05
+entrypoint = "main.md"
+reading_time_minutes = 8

@@ -1,0 +1,6 @@
+title = "Exploring Neural Networks in C++"
+slug = "neural-networks-cpp"
+description = "From scratch — no frameworks, no dependencies"
+date = 2026-02-10
+entrypoint = "main.md"
+reading_time_minutes = 10

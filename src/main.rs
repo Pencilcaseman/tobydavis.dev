@@ -36,6 +36,15 @@ fn main() {
 
 #[component]
 fn App() -> Element {
+    use_effect(|| {
+        document::eval(r#"
+            const saved = localStorage.getItem('theme');
+            if (saved) {
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+        "#);
+    });
+
     rsx! {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS }
