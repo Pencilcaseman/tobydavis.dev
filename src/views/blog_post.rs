@@ -8,44 +8,99 @@ const SCROLL_OBSERVER_JS: &str = r##"
         const tocItems = Array.from(document.querySelectorAll('.toc-item'));
         if (headings.length === 0 || tocItems.length === 0) return;
 
-        // Get the children (toc-child items) that follow a parent item
-        function getChildren(parent) {
+        // Track which parents are manually pinned open/closed
+        const pinned = new Map();
+
+        function getRow(item) {
+            return item.closest('.toc-row');
+        }
+
+        function getChildren(parentItem) {
             const items = [];
-            let el = parent.nextElementSibling;
-            while (el && el.classList.contains('toc-child')) {
-                items.push(el);
-                el = el.nextElementSibling;
+            let row = getRow(parentItem)?.nextElementSibling;
+            while (row) {
+                const child = row.querySelector('.toc-child');
+                if (!child) break;
+                items.push(child);
+                row = row.nextElementSibling;
             }
             return items;
         }
 
-        // Walk backwards to find the nearest non-child ancestor
-        function getParent(child) {
-            let el = child.previousElementSibling;
-            while (el && el.classList.contains('toc-child')) el = el.previousElementSibling;
-            return el;
+        function getParentItem(childItem) {
+            let row = getRow(childItem)?.previousElementSibling;
+            while (row) {
+                const item = row.querySelector('.toc-item:not(.toc-child)');
+                if (item) return item;
+                row = row.previousElementSibling;
+            }
+            return null;
+        }
+
+        function showChildren(parentItem) {
+            getChildren(parentItem).forEach(el => el.classList.add('visible'));
+            const btn = getRow(parentItem)?.querySelector('.toc-toggle');
+            if (btn) btn.classList.add('expanded');
+        }
+
+        function hideChildren(parentItem) {
+            getChildren(parentItem).forEach(el => el.classList.remove('visible'));
+            const btn = getRow(parentItem)?.querySelector('.toc-toggle');
+            if (btn) btn.classList.remove('expanded');
         }
 
         function activate(id) {
             tocItems.forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.toc-child.visible').forEach(el => el.classList.remove('visible'));
+
+            // Collapse all non-pinned sections
+            tocItems.filter(el => !el.classList.contains('toc-child')).forEach(parent => {
+                const href = parent.getAttribute('href')?.slice(1);
+                if (!pinned.get(href)) hideChildren(parent);
+            });
 
             const link = document.querySelector(`.toc-item[href="#${id}"]`);
             if (!link) return;
             link.classList.add('active');
 
             if (link.classList.contains('toc-child')) {
-                // Activate parent and show all siblings
-                const parent = getParent(link);
+                const parent = getParentItem(link);
                 if (parent) {
                     parent.classList.add('active');
-                    getChildren(parent).forEach(el => el.classList.add('visible'));
+                    showChildren(parent);
                 }
             } else {
-                // Show children of this parent
-                getChildren(link).forEach(el => el.classList.add('visible'));
+                showChildren(link);
             }
+
+            // Also show any pinned sections
+            pinned.forEach((open, href) => {
+                if (open) {
+                    const item = document.querySelector(`.toc-item[href="#${href}"]`);
+                    if (item) showChildren(item);
+                }
+            });
         }
+
+        // Toggle buttons
+        document.querySelectorAll('.toc-toggle').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                const row = btn.closest('.toc-row');
+                const parentItem = row?.querySelector('.toc-item');
+                if (!parentItem) return;
+                const href = parentItem.getAttribute('href')?.slice(1);
+
+                const isExpanded = btn.classList.contains('expanded');
+                if (isExpanded) {
+                    hideChildren(parentItem);
+                    pinned.set(href, false);
+                } else {
+                    showChildren(parentItem);
+                    pinned.set(href, true);
+                }
+            });
+        });
 
         const observer = new IntersectionObserver(entries => {
             for (const entry of entries) {

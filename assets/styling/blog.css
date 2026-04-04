@@ -66,8 +66,14 @@
     margin-bottom: 12px;
 }
 
+.toc-row {
+    display: flex;
+    align-items: baseline;
+}
+
 .toc-item {
     display: block;
+    flex: 1;
     padding: 4px 0 4px 12px;
     border-left: 2px solid transparent;
     color: var(--text-muted);
@@ -82,6 +88,25 @@
 .toc-item.active {
     color: var(--accent);
     border-left-color: var(--accent);
+}
+
+.toc-toggle {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 10px;
+    padding: 2px 6px;
+    transition: transform 0.2s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.toc-toggle:hover {
+    color: var(--accent);
+}
+
+.toc-toggle.expanded {
+    transform: rotate(90deg);
 }
 
 .toc-item.toc-child {
