@@ -15,3 +15,6 @@ pub use callout::{Callout, CalloutKind};
 
 mod code_block;
 pub use code_block::CodeBlock;
+
+mod toc;
+pub use toc::{TableOfContents, TocEntry};

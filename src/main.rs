@@ -28,6 +28,7 @@ const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/styling/main.css");
 const NAVBAR_CSS: Asset = asset!("/assets/styling/navbar.css");
 const HOME_CSS: Asset = asset!("/assets/styling/home.css");
+const BLOG_CSS: Asset = asset!("/assets/styling/blog.css");
 
 fn main() {
     dioxus::launch(App);
@@ -40,6 +41,7 @@ fn App() -> Element {
         document::Link { rel: "stylesheet", href: MAIN_CSS }
         document::Link { rel: "stylesheet", href: NAVBAR_CSS }
         document::Link { rel: "stylesheet", href: HOME_CSS }
+        document::Link { rel: "stylesheet", href: BLOG_CSS }
 
         Router::<Route> {}
     }
