@@ -6,13 +6,44 @@ const SCROLL_OBSERVER_JS: &str = r##"
     const headings = document.querySelectorAll('.blog-content h2[id], .blog-content h3[id]');
     if (headings.length === 0) return;
 
+    function getH3Group(h2Link) {
+        const items = [];
+        let el = h2Link.nextElementSibling;
+        while (el && el.classList.contains('toc-h3')) {
+            items.push(el);
+            el = el.nextElementSibling;
+        }
+        return items;
+    }
+
+    function getParentH2(h3Link) {
+        let el = h3Link.previousElementSibling;
+        while (el && el.classList.contains('toc-h3')) el = el.previousElementSibling;
+        return el;
+    }
+
+    function activate(id) {
+        document.querySelectorAll('.toc-item.active').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.toc-item.toc-h3.visible').forEach(el => el.classList.remove('visible'));
+
+        const link = document.querySelector(`.toc-item[href="#${id}"]`);
+        if (!link) return;
+        link.classList.add('active');
+
+        if (link.classList.contains('toc-h3')) {
+            const parent = getParentH2(link);
+            if (parent) {
+                parent.classList.add('active');
+                getH3Group(parent).forEach(el => el.classList.add('visible'));
+            }
+        } else {
+            getH3Group(link).forEach(el => el.classList.add('visible'));
+        }
+    }
+
     const observer = new IntersectionObserver(entries => {
         for (const entry of entries) {
-            if (entry.isIntersecting) {
-                document.querySelectorAll('.toc-item.active').forEach(el => el.classList.remove('active'));
-                const link = document.querySelector(`.toc-item[href="#${entry.target.id}"]`);
-                if (link) link.classList.add('active');
-            }
+            if (entry.isIntersecting) activate(entry.target.id);
         }
     }, { rootMargin: '0px 0px -70% 0px' });
 

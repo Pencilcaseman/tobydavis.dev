@@ -87,10 +87,19 @@
 .toc-item.toc-h3 {
     padding-left: 24px;
     font-size: 12px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
 }
 
-.toc-item.collapsed {
-    display: none;
+.toc-item.toc-h3.visible {
+    max-height: 40px;
+    opacity: 1;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .callout {
@@ -156,8 +165,11 @@
         padding: 16px;
     }
 
-    .toc-item.collapsed {
-        display: block;
+    .toc-item.toc-h3 {
+        max-height: 40px;
+        opacity: 1;
+        padding-top: 4px;
+        padding-bottom: 4px;
     }
 
     .blog-spacer {

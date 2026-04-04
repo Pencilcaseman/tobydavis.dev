@@ -163,6 +163,9 @@
   }
 }
 @layer utilities {
+  .visible {
+    visibility: visible;
+  }
   .relative {
     position: relative;
   }
@@ -193,8 +196,14 @@
       max-width: 96rem;
     }
   }
+  .flex {
+    display: flex;
+  }
   .table {
     display: table;
+  }
+  .flex-shrink {
+    flex-shrink: 1;
   }
   .border {
     border-style: var(--tw-border-style);
