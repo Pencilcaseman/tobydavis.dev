@@ -14,8 +14,8 @@ enum Route {
         Home {},
         #[route("/blog")]
         BlogList {},
-        #[route("/blog/:slug")]
-        BlogPost { slug: String },
+        #[route("/blog/:id")]
+        BlogPost { id: String },
         #[route("/projects")]
         Projects {},
         #[route("/about")]
@@ -37,12 +37,14 @@ fn main() {
 #[component]
 fn App() -> Element {
     use_effect(|| {
-        document::eval(r#"
+        document::eval(
+            r#"
             const saved = localStorage.getItem('theme');
             if (saved) {
                 document.documentElement.setAttribute('data-theme', saved);
             }
-        "#);
+        "#,
+        );
     });
 
     rsx! {

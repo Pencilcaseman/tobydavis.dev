@@ -1,6 +1,4 @@
 title = "Building a SIMD-Accelerated Math Library"
-slug = "simd-math-library"
 description = "Abstracting over AVX2, AVX-512, and NEON without losing performance"
-date = 2026-03-15
-entrypoint = "main.md"
+date = "2026-03-15"
 reading_time_minutes = 14

@@ -1,11 +1,5 @@
+use crate::data::TocEntry;
 use dioxus::prelude::*;
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct TocEntry {
-    pub id: String,
-    pub title: String,
-    pub level: u8,
-}
 
 #[component]
 pub fn TableOfContents(entries: Vec<TocEntry>, active_id: String) -> Element {
@@ -17,17 +11,11 @@ pub fn TableOfContents(entries: Vec<TocEntry>, active_id: String) -> Element {
                 {
                     let is_active = entry.id == active_id;
                     let is_child = entry.level == 3;
-
-                    let parent_active = if is_child {
-                        entries.iter()
-                            .rev()
-                            .filter(|e| e.level == 2)
-                            .take_while(|e| e.id != entry.id)
-                            .any(|e| e.id == active_id)
-                        || is_active
-                    } else {
-                        true
-                    };
+                    let parent_active = !is_child || is_active || entries.iter()
+                        .rev()
+                        .filter(|e| e.level == 2)
+                        .take_while(|e| e.id != entry.id)
+                        .any(|e| e.id == active_id);
 
                     let class = format!(
                         "toc-item{}{}{}",
@@ -37,11 +25,7 @@ pub fn TableOfContents(entries: Vec<TocEntry>, active_id: String) -> Element {
                     );
 
                     rsx! {
-                        a {
-                            class: "{class}",
-                            href: "#{entry.id}",
-                            "{entry.title}"
-                        }
+                        a { class: "{class}", href: "#{entry.id}", "{entry.title}" }
                     }
                 }
             }

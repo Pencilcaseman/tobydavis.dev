@@ -1,5 +1,5 @@
-use crate::data::PostMeta;
 use crate::Route;
+use crate::data::PostMeta;
 use dioxus::prelude::*;
 
 #[component]
@@ -9,7 +9,7 @@ pub fn PostList(posts: Vec<PostMeta>) -> Element {
             class: "post-list",
             for post in posts.iter() {
                 Link {
-                    to: Route::BlogPost { slug: post.slug.clone() },
+                    to: Route::BlogPost { id: post.id.clone() },
                     class: "post-row",
                     div {
                         div { class: "post-title", "{post.title}" }
