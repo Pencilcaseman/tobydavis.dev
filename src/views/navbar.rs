@@ -1,24 +1,31 @@
+use crate::components::{Footer, ThemeToggle};
 use crate::Route;
 use dioxus::prelude::*;
 
-/// The Navbar component that will be rendered on all pages of our app since every page is under the layout.
 #[component]
 pub fn Navbar() -> Element {
     rsx! {
-        div {
-            id: "navbar",
+        nav {
+            class: "site-nav",
             Link {
                 to: Route::Home {},
-                "Home"
+                class: "site-name",
+                "Toby Davis"
             }
-            Link {
-                to: Route::Blog { id: 1 },
-                "Blog"
+            span { class: "nav-sep", "·" }
+            div {
+                class: "nav-links",
+                Link { to: Route::Home {}, "Home" }
+                Link { to: Route::BlogList {}, "Blog" }
+                Link { to: Route::Projects {}, "Projects" }
+                Link { to: Route::About {}, "About" }
+                Link { to: Route::Contact {}, "Contact" }
             }
+            ThemeToggle {}
         }
 
-        // The `Outlet` component is used to render the next component inside the layout. In this case, it will render either
-        // the [`Home`] or [`Blog`] component depending on the current route.
         Outlet::<Route> {}
+
+        Footer {}
     }
 }
