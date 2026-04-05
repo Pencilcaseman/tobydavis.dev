@@ -1,3 +1,4 @@
+use crate::components::icons::ChevronRight;
 use crate::data::TocEntry;
 use dioxus::prelude::*;
 
@@ -5,14 +6,10 @@ use dioxus::prelude::*;
 pub fn TableOfContents(entries: Vec<TocEntry>) -> Element {
     let min_level = entries.iter().map(|e| e.level).min().unwrap_or(1);
 
-    // Check if a parent item has children following it
     let has_children: Vec<bool> = entries
         .iter()
         .enumerate()
-        .map(|(i, e)| {
-            e.level - min_level == 0
-                && entries.get(i + 1).is_some_and(|next| next.level > e.level)
-        })
+        .map(|(i, e)| entries.get(i + 1).is_some_and(|next| next.level > e.level))
         .collect();
 
     rsx! {
@@ -22,13 +19,15 @@ pub fn TableOfContents(entries: Vec<TocEntry>) -> Element {
             for (i, entry) in entries.iter().enumerate() {
                 {
                     let depth = (entry.level - min_level) as usize;
-                    let class = if depth > 0 { "toc-item toc-child" } else { "toc-item" };
+                    let row_class = if depth > 0 { "toc-row child-row" } else { "toc-row" };
+                    let item_class = if depth > 0 { "toc-item toc-child" } else { "toc-item" };
                     let indent = format!("{}px", 12 + depth * 12);
 
                     rsx! {
-                        div { class: "toc-row",
+                        div {
+                            class: "{row_class}",
                             a {
-                                class: "{class}",
+                                class: "{item_class}",
                                 style: "padding-left: {indent}",
                                 "data-level": "{entry.level}",
                                 href: "#{entry.id}",
@@ -37,8 +36,7 @@ pub fn TableOfContents(entries: Vec<TocEntry>) -> Element {
                             if has_children[i] {
                                 button {
                                     class: "toc-toggle",
-                                    "data-parent": "#{entry.id}",
-                                    "▸"
+                                    ChevronRight { size: "14px".to_string() }
                                 }
                             }
                         }

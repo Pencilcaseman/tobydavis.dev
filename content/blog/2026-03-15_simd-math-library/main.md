@@ -1,8 +1,20 @@
 # This Is a Heading
 
-Modern CPUs ship with powerful SIMD instruction sets --- AVX2, AVX-512, NEON --- but writing portable vectorized code remains painful. A single operation like a fused multiply-add might need three completely different implementations across x86, ARM, and fallback scalar paths.
+Modern CPUs ship with powerful SIMD instruction sets --- AVX2, AVX-512, NEON ---
+but writing portable vectorized code remains painful. A single operation like
+a fused multiply-add might need three completely different implementations
+across x86, ARM, and fallback scalar paths.
 
-In this post, we'll walk through the design of a math library that abstracts over these backends while maintaining zero-cost performance.
+In this post, we'll walk through the design of a math library that abstracts
+over these backends while maintaining zero-cost performance.
+
+This is an equation: $y = mx + c$.
+
+This is another equation
+
+$$
+    x = \frac{\sqrt{b^2 - 4ac}}{2a}
+$$
 
 ## The Problem
 

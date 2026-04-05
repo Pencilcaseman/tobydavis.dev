@@ -12,3 +12,5 @@ pub use project_list::ProjectList;
 
 mod toc;
 pub use toc::TableOfContents;
+
+pub mod icons;

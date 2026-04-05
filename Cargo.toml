@@ -8,10 +8,13 @@ edition = "2024"
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
-comrak = "0.51.0"
 dioxus = { version = "0.7.4", features = ["router", "fullstack"] }
 serde = { version = "1", features = ["derive"] }
 toml = "1.1.2"
+typst = "0.14"
+typst-assets = { version = "0.14", features = ["fonts"] }
+typst-html = "0.14"
+typst-kit = "0.14"
 
 [features]
 default = ["web"]

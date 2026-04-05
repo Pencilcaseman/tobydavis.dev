@@ -5,106 +5,137 @@ use dioxus::prelude::*;
 const SCROLL_OBSERVER_JS: &str = r##"
     function init() {
         const headings = document.querySelectorAll('.blog-content [id]');
-        const tocItems = Array.from(document.querySelectorAll('.toc-item'));
-        if (headings.length === 0 || tocItems.length === 0) return;
+        const rows = Array.from(document.querySelectorAll('.toc-row'));
+        if (!headings.length || !rows.length) return;
 
-        // Track which parents are manually pinned open/closed
-        const pinned = new Map();
+        const pinned = new Map(); // href -> bool
 
-        function getRow(item) {
-            return item.closest('.toc-row');
-        }
+        // --- Helpers ---
 
-        function getChildren(parentItem) {
-            const items = [];
-            let row = getRow(parentItem)?.nextElementSibling;
-            while (row) {
-                const child = row.querySelector('.toc-child');
-                if (!child) break;
-                items.push(child);
-                row = row.nextElementSibling;
+        function itemOf(r) { return r.querySelector('.toc-item'); }
+        function levelOf(r) { return parseInt(itemOf(r)?.dataset.level || '0'); }
+        function hrefOf(r) { return itemOf(r)?.getAttribute('href')?.slice(1) || ''; }
+        function isChild(r) { return r.classList.contains('child-row'); }
+
+        function directChildren(row) {
+            const lvl = levelOf(row), out = [];
+            for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
+                const l = levelOf(rows[i]);
+                if (l <= lvl) break;
+                if (l === lvl + 1) out.push(rows[i]);
             }
-            return items;
+            return out;
         }
 
-        function getParentItem(childItem) {
-            let row = getRow(childItem)?.previousElementSibling;
-            while (row) {
-                const item = row.querySelector('.toc-item:not(.toc-child)');
-                if (item) return item;
-                row = row.previousElementSibling;
+        function allDescendants(row) {
+            const lvl = levelOf(row), out = [];
+            for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
+                if (levelOf(rows[i]) <= lvl) break;
+                out.push(rows[i]);
+            }
+            return out;
+        }
+
+        function parent(row) {
+            const lvl = levelOf(row);
+            for (let i = rows.indexOf(row) - 1; i >= 0; i--) {
+                if (levelOf(rows[i]) < lvl) return rows[i];
             }
             return null;
         }
 
-        function showChildren(parentItem) {
-            getChildren(parentItem).forEach(el => el.classList.add('visible'));
-            const btn = getRow(parentItem)?.querySelector('.toc-toggle');
-            if (btn) btn.classList.add('expanded');
+        function ancestorChain(row) {
+            const chain = [];
+            let r = row;
+            while (r) { chain.push(r); r = parent(r); }
+            return chain;
         }
 
-        function hideChildren(parentItem) {
-            getChildren(parentItem).forEach(el => el.classList.remove('visible'));
-            const btn = getRow(parentItem)?.querySelector('.toc-toggle');
-            if (btn) btn.classList.remove('expanded');
+        // --- Visibility (row shown/hidden) ---
+
+        function reveal(row) { row.classList.add('visible'); }
+        function conceal(row) { row.classList.remove('visible'); }
+
+        // --- Toggle sync (computed from DOM, never set speculatively) ---
+
+        function syncToggles() {
+            rows.forEach(row => {
+                const btn = row.querySelector('.toc-toggle');
+                if (!btn) return;
+                const hasVisibleChild = directChildren(row).some(c => c.classList.contains('visible'));
+                btn.classList.toggle('expanded', hasVisibleChild);
+            });
         }
+
+        // --- Core: activate a heading ---
 
         function activate(id) {
-            tocItems.forEach(el => el.classList.remove('active'));
+            // 1. Clear highlights
+            rows.forEach(r => itemOf(r)?.classList.remove('active'));
 
-            // Collapse all non-pinned sections
-            tocItems.filter(el => !el.classList.contains('toc-child')).forEach(parent => {
-                const href = parent.getAttribute('href')?.slice(1);
-                if (!pinned.get(href)) hideChildren(parent);
+            // 2. Collapse all child rows (except pinned)
+            rows.filter(isChild).forEach(r => {
+                if (!pinned.get(hrefOf(r))) conceal(r);
             });
 
+            // 3. Find and highlight the active row
             const link = document.querySelector(`.toc-item[href="#${id}"]`);
-            if (!link) return;
+            if (!link) { syncToggles(); return; }
             link.classList.add('active');
+            const activeRow = link.closest('.toc-row');
+            if (!activeRow) { syncToggles(); return; }
 
-            if (link.classList.contains('toc-child')) {
-                const parent = getParentItem(link);
-                if (parent) {
-                    parent.classList.add('active');
-                    showChildren(parent);
+            // 4. Reveal the path from root to active:
+            //    For each ancestor, show all siblings (= parent's direct children)
+            const chain = ancestorChain(activeRow);
+            for (const row of chain) {
+                reveal(row);
+                const p = parent(row);
+                if (p) {
+                    directChildren(p).forEach(reveal);
                 }
-            } else {
-                showChildren(link);
             }
 
-            // Also show any pinned sections
+            // 5. Expand one level below the active item
+            directChildren(activeRow).forEach(reveal);
+
+            // 6. Re-expand pinned sections
             pinned.forEach((open, href) => {
-                if (open) {
-                    const item = document.querySelector(`.toc-item[href="#${href}"]`);
-                    if (item) showChildren(item);
-                }
+                if (!open) return;
+                const el = document.querySelector(`.toc-item[href="#${href}"]`)?.closest('.toc-row');
+                if (el) directChildren(el).forEach(reveal);
             });
+
+            // 7. Sync all toggle arrows from actual state
+            syncToggles();
         }
 
-        // Toggle buttons
+        // --- Toggle click ---
+
         document.querySelectorAll('.toc-toggle').forEach(btn => {
             btn.addEventListener('click', e => {
                 e.preventDefault();
                 e.stopPropagation();
                 const row = btn.closest('.toc-row');
-                const parentItem = row?.querySelector('.toc-item');
-                if (!parentItem) return;
-                const href = parentItem.getAttribute('href')?.slice(1);
+                const href = hrefOf(row);
+                const expanded = directChildren(row).some(c => c.classList.contains('visible'));
 
-                const isExpanded = btn.classList.contains('expanded');
-                if (isExpanded) {
-                    hideChildren(parentItem);
+                if (expanded) {
+                    allDescendants(row).forEach(conceal);
                     pinned.set(href, false);
                 } else {
-                    showChildren(parentItem);
+                    directChildren(row).forEach(reveal);
                     pinned.set(href, true);
                 }
+                syncToggles();
             });
         });
 
+        // --- Scroll observer ---
+
         const observer = new IntersectionObserver(entries => {
-            for (const entry of entries) {
-                if (entry.isIntersecting) activate(entry.target.id);
+            for (const e of entries) {
+                if (e.isIntersecting) activate(e.target.id);
             }
         }, { rootMargin: '0px 0px -70% 0px' });
 
@@ -120,7 +151,9 @@ const SCROLL_OBSERVER_JS: &str = r##"
 
 #[component]
 pub fn BlogPost(id: String) -> Element {
-    use_effect(|| { document::eval(SCROLL_OBSERVER_JS); });
+    use_effect(|| {
+        document::eval(SCROLL_OBSERVER_JS);
+    });
 
     let post = use_server_future(move || {
         let id = id.clone();
