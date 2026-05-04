@@ -1,6 +1,9 @@
-use crate::Route;
-use crate::components::{Footer, ThemeToggle};
 use dioxus::prelude::*;
+
+use crate::{
+    Route,
+    components::{Footer, ThemeToggle},
+};
 
 #[component]
 pub fn Navbar() -> Element {

@@ -1,5 +1,6 @@
-use crate::data::ProjectMeta;
 use dioxus::prelude::*;
+
+use crate::data::ProjectMeta;
 
 #[component]
 pub fn ProjectList(projects: Vec<ProjectMeta>) -> Element {

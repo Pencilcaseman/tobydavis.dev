@@ -1,164 +1,137 @@
-use crate::components::TableOfContents;
-use crate::data::get_post;
 use dioxus::prelude::*;
+
+use crate::{components::TableOfContents, data::get_post};
 
 const SCROLL_OBSERVER_JS: &str = r##"
     function init() {
         const headings = document.querySelectorAll('.blog-content [id]');
-        const rows = Array.from(document.querySelectorAll('.toc-row'));
-        if (!headings.length || !rows.length) return;
+        if (!headings.length) return;
 
-        const pinned = new Map(); // href -> bool
+        function setupToc(toc) {
+            const rows = Array.from(toc.querySelectorAll('.toc-row'));
+            if (!rows.length) return null;
 
-        // --- Helpers ---
+            const pinned = new Map(); // href -> bool
 
-        function itemOf(r) { return r.querySelector('.toc-item'); }
-        function levelOf(r) { return parseInt(itemOf(r)?.dataset.level || '0'); }
-        function hrefOf(r) { return itemOf(r)?.getAttribute('href')?.slice(1) || ''; }
-        function isChild(r) { return r.classList.contains('child-row'); }
+            const itemOf = r => r.querySelector('.toc-item');
+            const levelOf = r => parseInt(itemOf(r)?.dataset.level || '0');
+            const hrefOf = r => itemOf(r)?.getAttribute('href')?.slice(1) || '';
+            const isChild = r => r.classList.contains('child-row');
 
-        function directChildren(row) {
-            const lvl = levelOf(row), out = [];
-            for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
-                const l = levelOf(rows[i]);
-                if (l <= lvl) break;
-                if (l === lvl + 1) out.push(rows[i]);
-            }
-            return out;
-        }
-
-        function allDescendants(row) {
-            const lvl = levelOf(row), out = [];
-            for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
-                if (levelOf(rows[i]) <= lvl) break;
-                out.push(rows[i]);
-            }
-            return out;
-        }
-
-        function parent(row) {
-            const lvl = levelOf(row);
-            for (let i = rows.indexOf(row) - 1; i >= 0; i--) {
-                if (levelOf(rows[i]) < lvl) return rows[i];
-            }
-            return null;
-        }
-
-        function ancestorChain(row) {
-            const chain = [];
-            let r = row;
-            while (r) { chain.push(r); r = parent(r); }
-            return chain;
-        }
-
-        // --- Visibility (row shown/hidden) ---
-
-        function reveal(row) { row.classList.add('visible'); }
-        function conceal(row) { row.classList.remove('visible'); }
-
-        // --- Toggle sync (computed from DOM, never set speculatively) ---
-
-        function syncToggles() {
-            rows.forEach(row => {
-                const btn = row.querySelector('.toc-toggle');
-                if (!btn) return;
-                const hasVisibleChild = directChildren(row).some(c => c.classList.contains('visible'));
-                btn.classList.toggle('expanded', hasVisibleChild);
-            });
-        }
-
-        // --- Core: activate a heading ---
-
-        function activate(id) {
-            // 1. Clear highlights
-            rows.forEach(r => itemOf(r)?.classList.remove('active'));
-
-            // 2. Collapse all child rows (except pinned)
-            rows.filter(isChild).forEach(r => {
-                if (!pinned.get(hrefOf(r))) conceal(r);
-            });
-
-            // 3. Find and highlight the active row
-            const link = document.querySelector(`.toc-item[href="#${id}"]`);
-            if (!link) { syncToggles(); return; }
-            link.classList.add('active');
-            const activeRow = link.closest('.toc-row');
-            if (!activeRow) { syncToggles(); return; }
-
-            // 4. Reveal the path from root to active:
-            //    For each ancestor, show all siblings (= parent's direct children)
-            const chain = ancestorChain(activeRow);
-            for (const row of chain) {
-                reveal(row);
-                const p = parent(row);
-                if (p) {
-                    directChildren(p).forEach(reveal);
+            function directChildren(row) {
+                const lvl = levelOf(row), out = [];
+                for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
+                    const l = levelOf(rows[i]);
+                    if (l <= lvl) break;
+                    if (l === lvl + 1) out.push(rows[i]);
                 }
+                return out;
             }
 
-            // 5. Expand one level below the active item
-            directChildren(activeRow).forEach(reveal);
-
-            // 6. Re-expand pinned sections
-            pinned.forEach((open, href) => {
-                if (!open) return;
-                const el = document.querySelector(`.toc-item[href="#${href}"]`)?.closest('.toc-row');
-                if (el) directChildren(el).forEach(reveal);
-            });
-
-            // 7. Sync all toggle arrows from actual state
-            syncToggles();
-        }
-
-        // --- Toggle click ---
-
-        document.querySelectorAll('.toc-toggle').forEach(btn => {
-            btn.addEventListener('click', e => {
-                e.preventDefault();
-                e.stopPropagation();
-                const row = btn.closest('.toc-row');
-                const href = hrefOf(row);
-                const expanded = directChildren(row).some(c => c.classList.contains('visible'));
-
-                if (expanded) {
-                    allDescendants(row).forEach(conceal);
-                    pinned.set(href, false);
-                } else {
-                    directChildren(row).forEach(reveal);
-                    pinned.set(href, true);
+            function allDescendants(row) {
+                const lvl = levelOf(row), out = [];
+                for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
+                    if (levelOf(rows[i]) <= lvl) break;
+                    out.push(rows[i]);
                 }
+                return out;
+            }
+
+            function parent(row) {
+                const lvl = levelOf(row);
+                for (let i = rows.indexOf(row) - 1; i >= 0; i--) {
+                    if (levelOf(rows[i]) < lvl) return rows[i];
+                }
+                return null;
+            }
+
+            function ancestorChain(row) {
+                const chain = [];
+                let r = row;
+                while (r) { chain.push(r); r = parent(r); }
+                return chain;
+            }
+
+            const reveal = row => row.classList.add('visible');
+            const conceal = row => row.classList.remove('visible');
+
+            function syncToggles() {
+                rows.forEach(row => {
+                    const btn = row.querySelector('.toc-toggle');
+                    if (!btn) return;
+                    const hasVisibleChild = directChildren(row).some(c => c.classList.contains('visible'));
+                    btn.classList.toggle('expanded', hasVisibleChild);
+                });
+            }
+
+            function activate(id) {
+                rows.forEach(r => itemOf(r)?.classList.remove('active'));
+
+                rows.filter(isChild).forEach(r => {
+                    if (!pinned.get(hrefOf(r))) conceal(r);
+                });
+
+                const link = toc.querySelector(`.toc-item[href="#${id}"]`);
+                if (!link) { syncToggles(); return; }
+                link.classList.add('active');
+                const activeRow = link.closest('.toc-row');
+                if (!activeRow) { syncToggles(); return; }
+
+                const chain = ancestorChain(activeRow);
+                for (const row of chain) {
+                    reveal(row);
+                    const p = parent(row);
+                    if (p) directChildren(p).forEach(reveal);
+                }
+                directChildren(activeRow).forEach(reveal);
+
+                pinned.forEach((open, href) => {
+                    if (!open) return;
+                    const el = toc.querySelector(`.toc-item[href="#${href}"]`)?.closest('.toc-row');
+                    if (el) directChildren(el).forEach(reveal);
+                });
+
                 syncToggles();
-            });
-        });
-
-        // --- Scroll observer ---
-
-        const observer = new IntersectionObserver(entries => {
-            for (const e of entries) {
-                if (e.isIntersecting) activate(e.target.id);
             }
-        }, { rootMargin: '0px 0px -70% 0px' });
 
-        headings.forEach(h => observer.observe(h));
-
-        // --- Narrow-screen burger collapse ---
-
-        const toc = document.querySelector('.toc');
-        const burger = toc?.querySelector('.toc-burger-btn');
-        if (toc && burger) {
-            burger.addEventListener('click', e => {
-                e.stopPropagation();
-                toc.classList.toggle('toc-open');
+            toc.querySelectorAll('.toc-toggle').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const row = btn.closest('.toc-row');
+                    const href = hrefOf(row);
+                    const expanded = directChildren(row).some(c => c.classList.contains('visible'));
+                    if (expanded) {
+                        allDescendants(row).forEach(conceal);
+                        pinned.set(href, false);
+                    } else {
+                        directChildren(row).forEach(reveal);
+                        pinned.set(href, true);
+                    }
+                    syncToggles();
+                });
             });
-            toc.querySelectorAll('.toc-item').forEach(a => {
-                a.addEventListener('click', () => toc.classList.remove('toc-open'));
-            });
-            const updateCollapsed = () => {
-                toc.classList.toggle('toc-collapsed', window.scrollY > 20);
-            };
-            window.addEventListener('scroll', updateCollapsed, { passive: true });
-            updateCollapsed();
+
+            return { activate };
         }
+
+        const tocs = Array.from(document.querySelectorAll('.toc'))
+            .map(setupToc)
+            .filter(Boolean);
+
+        function activateAll(id) { tocs.forEach(t => t.activate(id)); }
+
+
+        // Only observe chanes on desktop. It is annoying on mobile
+        // if (window.innerWidth > 900) {
+            const observer = new IntersectionObserver(entries => {
+                for (const e of entries) {
+                    if (e.isIntersecting) activateAll(e.target.id);
+                }
+            }, { rootMargin: '0px 0px -70% 0px' });
+
+            headings.forEach(h => observer.observe(h));
+        // }
     }
 
     if (document.readyState === 'complete') {
@@ -183,12 +156,24 @@ pub fn BlogPost(id: String) -> Element {
         Some(Ok(data)) => rsx! {
             div {
                 class: "blog-layout",
-                TableOfContents { entries: data.toc.clone() }
+                TableOfContents {
+                    entries: data.toc.clone(),
+                    modifier: "toc-sidebar".to_string(),
+                    id: "toc-sidebar".to_string(),
+                }
                 article {
                     class: "page-content blog-content",
                     h1 { "{data.meta.title}" }
                     div { class: "post-meta", "Toby Davis · {data.meta.date} · {data.meta.reading_time_minutes} min read" }
-                    div { dangerous_inner_html: "{data.html}" }
+                    TableOfContents {
+                        entries: data.toc.clone(),
+                        modifier: "toc-card".to_string(),
+                        id: "toc-card".to_string(),
+                    }
+                    div {
+                        class: "post-body-wrap",
+                        div { dangerous_inner_html: "{data.html}" }
+                    }
                 }
                 div { class: "blog-spacer" }
             }

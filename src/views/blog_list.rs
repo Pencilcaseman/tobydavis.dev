@@ -1,6 +1,6 @@
-use crate::components::PostList;
-use crate::data::get_all_posts;
 use dioxus::prelude::*;
+
+use crate::{components::PostList, data::get_all_posts};
 
 #[component]
 pub fn BlogList() -> Element {

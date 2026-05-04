@@ -1,6 +1,6 @@
-use crate::components::ProjectList;
-use crate::data::get_projects;
 use dioxus::prelude::*;
+
+use crate::{components::ProjectList, data::get_projects};
 
 #[component]
 pub fn Projects() -> Element {

@@ -14,7 +14,7 @@ pub fn Footer() -> Element {
                 nav {
                     class: "footer-links",
                     a { href: "https://github.com/Pencilcaseman", "GitHub" }
-                    a { href: "mailto:pencilcaseman@gmail.com", "Email" }
+                    a { href: "mailto:me@mail.tobydavis.dev", "Email" }
                 }
             }
         }

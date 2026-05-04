@@ -35,10 +35,7 @@ pub struct TocEntry {
 const BLOG_DIR: &str = "content/blog";
 
 fn folder_id(path: &std::path::Path) -> Option<String> {
-    path.file_name()?
-        .to_str()?
-        .split_once('_')
-        .map(|(_, id)| id.to_string())
+    path.file_name()?.to_str()?.split_once('_').map(|(_, id)| id.to_string())
 }
 
 fn load_meta(dir: &std::path::Path) -> Option<PostMeta> {
@@ -46,19 +43,21 @@ fn load_meta(dir: &std::path::Path) -> Option<PostMeta> {
     let toml_str = std::fs::read_to_string(dir.join("config.toml")).ok()?;
     let mut meta: PostMeta = toml::from_str(&toml_str).ok()?;
     meta.id = id;
+
     Some(meta)
 }
 
 #[get("/api/posts")]
 pub async fn get_all_posts() -> Result<Vec<PostMeta>> {
     let Ok(entries) = std::fs::read_dir(BLOG_DIR) else {
+        dioxus::logger::tracing::warn!("Blog post directory empty");
         return Ok(Vec::new());
     };
-    let mut posts: Vec<PostMeta> = entries
-        .flatten()
-        .filter_map(|e| load_meta(&e.path()))
-        .collect();
+
+    let mut posts: Vec<PostMeta> =
+        entries.flatten().filter_map(|e| load_meta(&e.path())).collect();
     posts.sort_by(|a, b| b.date.cmp(&a.date));
+
     Ok(posts)
 }
 
@@ -71,13 +70,14 @@ pub async fn get_post(id: String) -> Result<PostData> {
         .map(|e| e.path())
         .ok_or_else(|| ServerFnError::new(format!("Post not found: {id}")))?;
 
-    let meta =
-        load_meta(&post_dir).ok_or_else(|| ServerFnError::new(format!("Bad config for: {id}")))?;
+    let meta = load_meta(&post_dir)
+        .ok_or_else(|| ServerFnError::new(format!("Bad config for: {id}")))?;
 
     #[cfg(feature = "server")]
     {
-        let hash = hash_post_inputs(&post_dir)
-            .map_err(|e| ServerFnError::new(format!("Failed to hash post inputs: {e}")))?;
+        let hash = hash_post_inputs(&post_dir).map_err(|e| {
+            ServerFnError::new(format!("Failed to hash post inputs: {e}"))
+        })?;
 
         if let Some(entry) = POST_CACHE.get(&id) {
             if entry.hash == hash {
@@ -87,13 +87,7 @@ pub async fn get_post(id: String) -> Result<PostData> {
 
         let (html, toc) = render_post(&post_dir, &meta.entrypoint)?;
         let data = PostData { meta, html, toc };
-        POST_CACHE.insert(
-            id,
-            CacheEntry {
-                hash,
-                data: data.clone(),
-            },
-        );
+        POST_CACHE.insert(id, CacheEntry { hash, data: data.clone() });
         return Ok(data);
     }
 
@@ -103,8 +97,6 @@ pub async fn get_post(id: String) -> Result<PostData> {
         Ok(PostData { meta, html, toc })
     }
 }
-
-// --- Cache ---
 
 #[cfg(feature = "server")]
 #[derive(Clone)]
@@ -123,13 +115,12 @@ static POST_CACHE: std::sync::LazyLock<moka::sync::Cache<String, CacheEntry>> =
             .build()
     });
 
-/// Hashes every file in the post directory plus the shared template, so any
-/// content change (post text, imported `.typ`, embedded asset, template tweak)
-/// invalidates the cached render.
 #[cfg(feature = "server")]
 fn hash_post_inputs(post_dir: &std::path::Path) -> std::io::Result<u64> {
-    use std::collections::hash_map::DefaultHasher;
-    use std::hash::{Hash, Hasher};
+    use std::{
+        collections::hash_map::DefaultHasher,
+        hash::{Hash, Hasher},
+    };
 
     let mut hasher = DefaultHasher::new();
 
@@ -152,37 +143,42 @@ fn hash_post_inputs(post_dir: &std::path::Path) -> std::io::Result<u64> {
     Ok(hasher.finish())
 }
 
-// --- Server-side Typst rendering ---
-
 #[cfg(feature = "server")]
 fn render_post(
     post_dir: &std::path::Path,
     entrypoint: &str,
 ) -> std::result::Result<(String, Vec<TocEntry>), ServerFnError> {
-    use std::collections::HashMap;
-    use std::sync::{LazyLock, Mutex};
-    use typst::diag::{FileError, FileResult};
-    use typst::foundations::{Bytes, Datetime};
-    use typst::syntax::{FileId, Source, VirtualPath};
-    use typst::text::{Font, FontBook};
-    use typst::utils::LazyHash;
-    use typst::{Feature, Library, LibraryExt, World};
-    use typst_kit::download::{Downloader, ProgressSink};
-    use typst_kit::package::PackageStorage;
+    use std::{
+        collections::HashMap,
+        sync::{LazyLock, Mutex},
+    };
 
-    // Fonts are expensive — cache globally
-    static FONTS: LazyLock<(LazyHash<FontBook>, Vec<Font>)> = LazyLock::new(|| {
-        let mut book = FontBook::new();
-        let mut fonts = Vec::new();
-        for data in typst_assets::fonts() {
-            let bytes = Bytes::new(data);
-            for font in Font::iter(bytes) {
-                book.push(font.info().clone());
-                fonts.push(font);
+    use typst::{
+        Feature, Library, LibraryExt, World,
+        diag::{FileError, FileResult},
+        foundations::{Bytes, Datetime},
+        syntax::{FileId, Source, VirtualPath},
+        text::{Font, FontBook},
+        utils::LazyHash,
+    };
+    use typst_kit::{
+        download::{Downloader, ProgressSink},
+        package::PackageStorage,
+    };
+
+    static FONTS: LazyLock<(LazyHash<FontBook>, Vec<Font>)> =
+        LazyLock::new(|| {
+            let mut book = FontBook::new();
+            let mut fonts = Vec::new();
+            for data in typst_assets::fonts() {
+                let bytes = Bytes::new(data);
+                for font in Font::iter(bytes) {
+                    book.push(font.info().clone());
+                    fonts.push(font);
+                }
             }
-        }
-        (LazyHash::new(book), fonts)
-    });
+            (LazyHash::new(book), fonts)
+        });
 
     static LIBRARY: LazyLock<LazyHash<Library>> = LazyLock::new(|| {
         let features = [Feature::Html].into_iter().collect();
@@ -191,7 +187,8 @@ fn render_post(
     });
 
     static PACKAGES: LazyLock<PackageStorage> = LazyLock::new(|| {
-        let ua = format!("{}/{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+        let ua =
+            format!("{}/{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
         PackageStorage::new(None, None, Downloader::new(ua))
     });
 
@@ -203,16 +200,15 @@ fn render_post(
 
     impl BlogWorld {
         fn read_package_file(&self, id: FileId) -> FileResult<Vec<u8>> {
-            let spec = id
-                .package()
-                .ok_or_else(|| FileError::NotFound(id.vpath().as_rootless_path().into()))?;
+            let spec = id.package().ok_or_else(|| {
+                FileError::NotFound(id.vpath().as_rootless_path().into())
+            })?;
             let pkg_root = PACKAGES
                 .prepare_package(spec, &mut ProgressSink)
                 .map_err(|e| FileError::Package(e))?;
-            let path = id
-                .vpath()
-                .resolve(&pkg_root)
-                .ok_or_else(|| FileError::NotFound(id.vpath().as_rootless_path().into()))?;
+            let path = id.vpath().resolve(&pkg_root).ok_or_else(|| {
+                FileError::NotFound(id.vpath().as_rootless_path().into())
+            })?;
             std::fs::read(&path).map_err(|e| FileError::from_io(e, &path))
         }
     }
@@ -234,7 +230,8 @@ fn render_post(
             }
             if id.package().is_some() {
                 let bytes = self.read_package_file(id)?;
-                let text = String::from_utf8(bytes).map_err(|_| FileError::InvalidUtf8)?;
+                let text = String::from_utf8(bytes)
+                    .map_err(|_| FileError::InvalidUtf8)?;
                 let source = Source::new(id, text);
                 self.sources.lock().unwrap().insert(id, source.clone());
                 return Ok(source);
@@ -269,11 +266,14 @@ fn render_post(
         }
     }
 
-    // Build the world
     let content_root = std::path::Path::new("content");
     let main_path = post_dir.join(entrypoint);
-    let main_text = std::fs::read_to_string(&main_path)
-        .map_err(|e| ServerFnError::new(format!("Failed to read {}: {e}", main_path.display())))?;
+    let main_text = std::fs::read_to_string(&main_path).map_err(|e| {
+        ServerFnError::new(format!(
+            "Failed to read {}: {e}",
+            main_path.display()
+        ))
+    })?;
 
     let rel_main = main_path.strip_prefix(content_root).unwrap_or(&main_path);
     let main_id = FileId::new(None, VirtualPath::new(rel_main));
@@ -286,21 +286,23 @@ fn render_post(
     // Load template
     let template_path = content_root.join("template.typ");
     if template_path.exists() {
-        let text = std::fs::read_to_string(&template_path)
-            .map_err(|e| ServerFnError::new(format!("Failed to read template: {e}")))?;
+        let text = std::fs::read_to_string(&template_path).map_err(|e| {
+            ServerFnError::new(format!("Failed to read template: {e}"))
+        })?;
         let id = FileId::new(None, VirtualPath::new("template.typ"));
         sources.insert(id, Source::new(id, text));
     }
 
-    // Load non-source files from post directory (images, data, etc.)
     if let Ok(entries) = std::fs::read_dir(post_dir) {
         for entry in entries.flatten() {
             let path = entry.path();
             if path.is_file() {
-                let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
+                let ext =
+                    path.extension().and_then(|e| e.to_str()).unwrap_or("");
                 if ext != "typ" && ext != "toml" {
                     if let Ok(data) = std::fs::read(&path) {
-                        let rel = path.strip_prefix(content_root).unwrap_or(&path);
+                        let rel =
+                            path.strip_prefix(content_root).unwrap_or(&path);
                         let fid = FileId::new(None, VirtualPath::new(rel));
                         files.insert(fid, Bytes::new(data));
                     }
@@ -326,12 +328,13 @@ fn render_post(
     })?;
 
     let full_html = typst_html::html(&doc).map_err(|errs| {
-        let msgs: Vec<String> = errs.iter().map(|e| format!("{}", e.message)).collect();
+        let msgs: Vec<String> =
+            errs.iter().map(|e| format!("{}", e.message)).collect();
         ServerFnError::new(format!("HTML export error:\n{}", msgs.join("\n")))
     })?;
 
-    // Make Typst's hardcoded black fills/strokes follow the page's text color so
-    // equations theme correctly in light/dark mode.
+    // Make Typst's hardcoded black fills/strokes follow the page's text color
+    // so equations theme correctly in light/dark mode.
     let full_html = full_html
         .replace(r##"fill="#000000""##, r##"fill="currentColor""##)
         .replace(r##"fill="#000""##, r##"fill="currentColor""##)
@@ -342,16 +345,6 @@ fn render_post(
     let (processed, toc) = process_headings(&body);
     Ok((processed, toc))
 }
-
-#[cfg(not(feature = "server"))]
-fn render_post(
-    _post_dir: &std::path::Path,
-    _entrypoint: &str,
-) -> std::result::Result<(String, Vec<TocEntry>), ServerFnError> {
-    Ok((String::new(), Vec::new()))
-}
-
-// --- HTML post-processing ---
 
 #[cfg(feature = "server")]
 fn extract_body(html: &str) -> String {

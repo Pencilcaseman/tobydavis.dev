@@ -1,5 +1,4 @@
 use dioxus::prelude::*;
-
 use views::{About, BlogList, BlogPost, Contact, Home, Navbar, Projects};
 
 mod components;
@@ -11,17 +10,17 @@ mod views;
 enum Route {
     #[layout(Navbar)]
         #[route("/")]
-        Home,
+        Home {},
         #[route("/blog")]
-        BlogList,
+        BlogList {},
         #[route("/blog/:id")]
         BlogPost { id: String },
         #[route("/projects")]
-        Projects,
+        Projects {},
         #[route("/about")]
-        About,
+        About {},
         #[route("/contact")]
-        Contact,
+        Contact {},
 }
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
