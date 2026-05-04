@@ -11,7 +11,7 @@ pub fn Home() -> Element {
 
     rsx! {
         div {
-            class: "home-content",
+            class: "page-content",
 
             div {
                 class: "hero-section",

@@ -2,11 +2,6 @@
 
 #show: template.with()
 
-Modern CPUs ship with powerful SIMD instruction sets --- AVX2, AVX-512, NEON ---
-but writing portable vectorized code remains painful. A single operation like
-a fused multiply-add might need three completely different implementations
-across x86, ARM, and fallback scalar paths.
-
 In this post, we'll walk through the design of a math library that abstracts
 over these backends while maintaining zero-cost performance.
 

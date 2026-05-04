@@ -12,6 +12,7 @@ typst = { version = "0.14", optional = true }
 typst-assets = { version = "0.14", features = ["fonts"], optional = true }
 typst-html = { version = "0.14", optional = true }
 typst-kit = { version = "0.14", optional = true }
+moka = { version = "0.12", features = ["sync"], optional = true }
 
 chrono = { version = "0.4", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
@@ -24,7 +25,7 @@ default = ["web"]
 web = ["dioxus/web"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
-server = ["dioxus/server", "typst", "typst-assets", "typst-html", "typst-kit"]
+server = ["dioxus/server", "typst", "typst-assets", "typst-html", "typst-kit", "moka"]
 
 [profile.release]
 panic = "abort"

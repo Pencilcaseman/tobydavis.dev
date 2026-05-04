@@ -140,6 +140,25 @@ const SCROLL_OBSERVER_JS: &str = r##"
         }, { rootMargin: '0px 0px -70% 0px' });
 
         headings.forEach(h => observer.observe(h));
+
+        // --- Narrow-screen burger collapse ---
+
+        const toc = document.querySelector('.toc');
+        const burger = toc?.querySelector('.toc-burger-btn');
+        if (toc && burger) {
+            burger.addEventListener('click', e => {
+                e.stopPropagation();
+                toc.classList.toggle('toc-open');
+            });
+            toc.querySelectorAll('.toc-item').forEach(a => {
+                a.addEventListener('click', () => toc.classList.remove('toc-open'));
+            });
+            const updateCollapsed = () => {
+                toc.classList.toggle('toc-collapsed', window.scrollY > 20);
+            };
+            window.addEventListener('scroll', updateCollapsed, { passive: true });
+            updateCollapsed();
+        }
     }
 
     if (document.readyState === 'complete') {
@@ -166,7 +185,7 @@ pub fn BlogPost(id: String) -> Element {
                 class: "blog-layout",
                 TableOfContents { entries: data.toc.clone() }
                 article {
-                    class: "blog-content",
+                    class: "page-content blog-content",
                     h1 { "{data.meta.title}" }
                     div { class: "post-meta", "Toby Davis · {data.meta.date} · {data.meta.reading_time_minutes} min read" }
                     div { dangerous_inner_html: "{data.html}" }

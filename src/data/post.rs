@@ -35,7 +35,10 @@ pub struct TocEntry {
 const BLOG_DIR: &str = "content/blog";
 
 fn folder_id(path: &std::path::Path) -> Option<String> {
-    path.file_name()?.to_str()?.split_once('_').map(|(_, id)| id.to_string())
+    path.file_name()?
+        .to_str()?
+        .split_once('_')
+        .map(|(_, id)| id.to_string())
 }
 
 fn load_meta(dir: &std::path::Path) -> Option<PostMeta> {
@@ -51,7 +54,10 @@ pub async fn get_all_posts() -> Result<Vec<PostMeta>> {
     let Ok(entries) = std::fs::read_dir(BLOG_DIR) else {
         return Ok(Vec::new());
     };
-    let mut posts: Vec<PostMeta> = entries.flatten().filter_map(|e| load_meta(&e.path())).collect();
+    let mut posts: Vec<PostMeta> = entries
+        .flatten()
+        .filter_map(|e| load_meta(&e.path()))
+        .collect();
     posts.sort_by(|a, b| b.date.cmp(&a.date));
     Ok(posts)
 }
@@ -65,11 +71,85 @@ pub async fn get_post(id: String) -> Result<PostData> {
         .map(|e| e.path())
         .ok_or_else(|| ServerFnError::new(format!("Post not found: {id}")))?;
 
-    let meta = load_meta(&post_dir)
-        .ok_or_else(|| ServerFnError::new(format!("Bad config for: {id}")))?;
+    let meta =
+        load_meta(&post_dir).ok_or_else(|| ServerFnError::new(format!("Bad config for: {id}")))?;
 
-    let (html, toc) = render_post(&post_dir, &meta.entrypoint)?;
-    Ok(PostData { meta, html, toc })
+    #[cfg(feature = "server")]
+    {
+        let hash = hash_post_inputs(&post_dir)
+            .map_err(|e| ServerFnError::new(format!("Failed to hash post inputs: {e}")))?;
+
+        if let Some(entry) = POST_CACHE.get(&id) {
+            if entry.hash == hash {
+                return Ok(entry.data);
+            }
+        }
+
+        let (html, toc) = render_post(&post_dir, &meta.entrypoint)?;
+        let data = PostData { meta, html, toc };
+        POST_CACHE.insert(
+            id,
+            CacheEntry {
+                hash,
+                data: data.clone(),
+            },
+        );
+        return Ok(data);
+    }
+
+    #[cfg(not(feature = "server"))]
+    {
+        let (html, toc) = render_post(&post_dir, &meta.entrypoint)?;
+        Ok(PostData { meta, html, toc })
+    }
+}
+
+// --- Cache ---
+
+#[cfg(feature = "server")]
+#[derive(Clone)]
+struct CacheEntry {
+    hash: u64,
+    data: PostData,
+}
+
+#[cfg(feature = "server")]
+static POST_CACHE: std::sync::LazyLock<moka::sync::Cache<String, CacheEntry>> =
+    std::sync::LazyLock::new(|| {
+        moka::sync::Cache::builder()
+            .max_capacity(128)
+            .time_to_live(std::time::Duration::from_secs(60 * 60))
+            .time_to_idle(std::time::Duration::from_secs(15 * 60))
+            .build()
+    });
+
+/// Hashes every file in the post directory plus the shared template, so any
+/// content change (post text, imported `.typ`, embedded asset, template tweak)
+/// invalidates the cached render.
+#[cfg(feature = "server")]
+fn hash_post_inputs(post_dir: &std::path::Path) -> std::io::Result<u64> {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+
+    let mut hasher = DefaultHasher::new();
+
+    let template_path = std::path::Path::new("content/template.typ");
+    if template_path.exists() {
+        std::fs::read(template_path)?.hash(&mut hasher);
+    }
+
+    let mut entries: Vec<_> = std::fs::read_dir(post_dir)?
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_file())
+        .collect();
+    entries.sort_by_key(|e| e.file_name());
+
+    for entry in entries {
+        entry.file_name().hash(&mut hasher);
+        std::fs::read(entry.path())?.hash(&mut hasher);
+    }
+
+    Ok(hasher.finish())
 }
 
 // --- Server-side Typst rendering ---
@@ -80,13 +160,15 @@ fn render_post(
     entrypoint: &str,
 ) -> std::result::Result<(String, Vec<TocEntry>), ServerFnError> {
     use std::collections::HashMap;
-    use std::sync::LazyLock;
+    use std::sync::{LazyLock, Mutex};
     use typst::diag::{FileError, FileResult};
     use typst::foundations::{Bytes, Datetime};
     use typst::syntax::{FileId, Source, VirtualPath};
     use typst::text::{Font, FontBook};
     use typst::utils::LazyHash;
     use typst::{Feature, Library, LibraryExt, World};
+    use typst_kit::download::{Downloader, ProgressSink};
+    use typst_kit::package::PackageStorage;
 
     // Fonts are expensive — cache globally
     static FONTS: LazyLock<(LazyHash<FontBook>, Vec<Font>)> = LazyLock::new(|| {
@@ -108,27 +190,68 @@ fn render_post(
         LazyHash::new(lib)
     });
 
+    static PACKAGES: LazyLock<PackageStorage> = LazyLock::new(|| {
+        let ua = format!("{}/{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+        PackageStorage::new(None, None, Downloader::new(ua))
+    });
+
     struct BlogWorld {
         main: FileId,
-        sources: HashMap<FileId, Source>,
-        files: HashMap<FileId, Bytes>,
+        sources: Mutex<HashMap<FileId, Source>>,
+        files: Mutex<HashMap<FileId, Bytes>>,
+    }
+
+    impl BlogWorld {
+        fn read_package_file(&self, id: FileId) -> FileResult<Vec<u8>> {
+            let spec = id
+                .package()
+                .ok_or_else(|| FileError::NotFound(id.vpath().as_rootless_path().into()))?;
+            let pkg_root = PACKAGES
+                .prepare_package(spec, &mut ProgressSink)
+                .map_err(|e| FileError::Package(e))?;
+            let path = id
+                .vpath()
+                .resolve(&pkg_root)
+                .ok_or_else(|| FileError::NotFound(id.vpath().as_rootless_path().into()))?;
+            std::fs::read(&path).map_err(|e| FileError::from_io(e, &path))
+        }
     }
 
     impl World for BlogWorld {
-        fn library(&self) -> &LazyHash<Library> { &LIBRARY }
-        fn book(&self) -> &LazyHash<FontBook> { &FONTS.0 }
-        fn main(&self) -> FileId { self.main }
+        fn library(&self) -> &LazyHash<Library> {
+            &LIBRARY
+        }
+        fn book(&self) -> &LazyHash<FontBook> {
+            &FONTS.0
+        }
+        fn main(&self) -> FileId {
+            self.main
+        }
 
         fn source(&self, id: FileId) -> FileResult<Source> {
-            self.sources.get(&id).cloned().ok_or(FileError::NotFound(
-                id.vpath().as_rootless_path().into(),
-            ))
+            if let Some(s) = self.sources.lock().unwrap().get(&id) {
+                return Ok(s.clone());
+            }
+            if id.package().is_some() {
+                let bytes = self.read_package_file(id)?;
+                let text = String::from_utf8(bytes).map_err(|_| FileError::InvalidUtf8)?;
+                let source = Source::new(id, text);
+                self.sources.lock().unwrap().insert(id, source.clone());
+                return Ok(source);
+            }
+            Err(FileError::NotFound(id.vpath().as_rootless_path().into()))
         }
 
         fn file(&self, id: FileId) -> FileResult<Bytes> {
-            self.files.get(&id).cloned().ok_or(FileError::NotFound(
-                id.vpath().as_rootless_path().into(),
-            ))
+            if let Some(b) = self.files.lock().unwrap().get(&id) {
+                return Ok(b.clone());
+            }
+            if id.package().is_some() {
+                let bytes = Bytes::new(self.read_package_file(id)?);
+                self.files.lock().unwrap().insert(id, bytes.clone());
+                return Ok(bytes);
+            }
+            Err(FileError::NotFound(id.vpath().as_rootless_path().into()))
         }
 
         fn font(&self, index: usize) -> Option<Font> {
@@ -186,12 +309,19 @@ fn render_post(
         }
     }
 
-    let world = BlogWorld { main: main_id, sources, files };
+    let world = BlogWorld {
+        main: main_id,
+        sources: Mutex::new(sources),
+        files: Mutex::new(files),
+    };
 
     // Compile
     let result = typst::compile::<typst_html::HtmlDocument>(&world);
     let doc = result.output.map_err(|errs| {
-        let msgs: Vec<String> = errs.iter().map(|e| format!("{}: {:?}", e.message, e.span)).collect();
+        let msgs: Vec<String> = errs
+            .iter()
+            .map(|e| format!("{}: {:?}", e.message, e.span))
+            .collect();
         ServerFnError::new(format!("Typst error:\n{}", msgs.join("\n")))
     })?;
 
@@ -200,18 +330,13 @@ fn render_post(
         ServerFnError::new(format!("HTML export error:\n{}", msgs.join("\n")))
     })?;
 
-    // Debug: find where SVGs are in the output
-    for (i, _) in full_html.match_indices("<svg") {
-        let end = (i + 200).min(full_html.len());
-        eprintln!("=== SVG at byte {} ===\n{}\n", i, &full_html[i..end]);
-    }
-    // Also dump the full HTML length and first occurrence of "dot product"
-    eprintln!("=== Full HTML length: {} ===", full_html.len());
-    if let Some(idx) = full_html.find("dot product") {
-        let start = idx.saturating_sub(50);
-        let end = (idx + 500).min(full_html.len());
-        eprintln!("=== AROUND 'dot product' ===\n{}\n=== END ===", &full_html[start..end]);
-    }
+    // Make Typst's hardcoded black fills/strokes follow the page's text color so
+    // equations theme correctly in light/dark mode.
+    let full_html = full_html
+        .replace(r##"fill="#000000""##, r##"fill="currentColor""##)
+        .replace(r##"fill="#000""##, r##"fill="currentColor""##)
+        .replace(r##"stroke="#000000""##, r##"stroke="currentColor""##)
+        .replace(r##"stroke="#000""##, r##"stroke="currentColor""##);
 
     let body = extract_body(&full_html);
     let (processed, toc) = process_headings(&body);

@@ -1,31 +1,27 @@
-.home-content,
 .page-content {
     max-width: 700px;
     margin: 0 auto;
-    padding: 0 16px 48px;
+    padding: 40px 16px 48px;
 }
 
+/* === Hero === */
 .hero-section {
-    padding: 40px 0 36px;
+    padding-bottom: 36px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 36px;
 }
 
-.hero-section h1 {
-    font-size: 32px;
-    margin-bottom: 12px;
-}
+.hero-section h1 { font-size: 32px; margin-bottom: 12px; }
 
 .hero-section .bio {
     font-size: 15px;
     line-height: 1.7;
     color: var(--text-muted);
-    max-width: 520px;
+    text-wrap: pretty;
 }
 
-.section {
-    margin-bottom: 36px;
-}
+/* === Sections === */
+.section { margin-bottom: 36px; }
 
 .section-head {
     font-size: 16px;
@@ -34,68 +30,35 @@
     letter-spacing: 0.3px;
 }
 
-.post-list {
-    display: flex;
-    flex-direction: column;
+/* === Post / project rows (shared shape) === */
+.post-row,
+.proj-row {
+    border-bottom: 1px solid var(--border);
 }
+
+.post-row:last-child,
+.proj-row:last-child { border-bottom: none; }
+
+.post-list { display: flex; flex-direction: column; }
 
 .post-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     padding: 10px 0;
-    border-bottom: 1px solid var(--border);
     color: var(--text);
     gap: 24px;
 }
 
-.post-row:last-child {
-    border-bottom: none;
-}
+.post-title       { font-size: 15px; color: var(--text); transition: color 0.15s; }
+.post-row:hover .post-title { color: var(--accent); }
 
-.post-title {
-    font-size: 15px;
-    color: var(--text);
-    transition: color 0.15s;
-}
+.post-desc        { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.post-date        { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
 
-.post-row:hover .post-title {
-    color: var(--accent);
-}
-
-.post-desc {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 2px;
-}
-
-.post-date {
-    font-size: 13px;
-    color: var(--text-muted);
-    white-space: nowrap;
-}
-
-.proj-row {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-}
-
-.proj-row:last-child {
-    border-bottom: none;
-}
-
-.proj-name {
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.proj-desc {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 3px;
-    line-height: 1.5;
-}
-
+.proj-row         { padding: 12px 0; }
+.proj-name        { font-size: 15px; font-weight: 600; }
+.proj-desc        { font-size: 13px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
 .proj-tech {
     font-family: 'Monaspace Neon Var', 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -104,7 +67,4 @@
     opacity: 0.7;
 }
 
-.loading {
-    color: var(--text-muted);
-    font-style: italic;
-}
+.loading { color: var(--text-muted); font-style: italic; }

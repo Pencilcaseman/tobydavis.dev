@@ -23,6 +23,10 @@ in
     tailwindcss_4
     wasm-bindgen-cli
     twiggy
+    binaryen
+
+    oha
+    vegeta
   ];
 
   languages = {

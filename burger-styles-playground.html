@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ToC Reveal · Scroll Direction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #111014;
+    --bg-deep: #0a0908;
+    --text: #c8c0b8;
+    --text-heading: #f0ece4;
+    --text-muted: #9b9181;
+    --border: #282420;
+    --accent: #d4a030;
+    --serif: 'IBM Plex Serif', serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    overflow: hidden;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    height: 100vh;
+  }
+
+  /* ──────── Controls ──────── */
+  .controls {
+    background: #0d0c0a;
+    border-right: 1px solid var(--border);
+    padding: 24px 22px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 22px;
+  }
+
+  .controls h1 {
+    font-family: var(--serif);
+    font-weight: 600; font-size: 18px;
+    color: var(--text-heading);
+  }
+  .controls h1 .sub {
+    font-family: var(--mono);
+    font-size: 10px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    display: block; margin-top: 4px;
+  }
+
+  .ctrl-section { display: flex; flex-direction: column; gap: 10px; }
+
+  .ctrl-label {
+    font-size: 10px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1.4px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .ctrl-label output {
+    color: var(--accent); font-family: var(--mono);
+    text-transform: none; letter-spacing: 0; font-size: 12px;
+  }
+
+  .variant-cards { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  .variant-cards button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 12px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--mono); font-size: 12px;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    text-align: left;
+  }
+  .variant-cards button .name {
+    display: block; color: var(--text);
+    font-weight: 500; margin-bottom: 4px;
+  }
+  .variant-cards button .desc {
+    font-size: 11px; color: var(--text-muted); line-height: 1.4;
+  }
+  .variant-cards button:hover { border-color: var(--text-muted); }
+  .variant-cards button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .variant-cards button.active .name,
+  .variant-cards button.active .desc { color: var(--bg-deep); }
+
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px;
+    background: var(--border); border-radius: 2px; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--accent); border-radius: 50%; cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    background: var(--accent); border-radius: 50%;
+    border: none; cursor: pointer;
+  }
+
+  .perf-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+    padding: 4px 8px; border-radius: 999px;
+    background: rgba(72,192,104,0.08);
+    border: 1px solid rgba(72,192,104,0.3);
+    color: #78e0a0;
+    width: fit-content;
+  }
+
+  .ctrl-divider { border: none; border-top: 1px dashed var(--border); margin: 4px 0; }
+
+  .prompt-card {
+    margin-top: auto;
+    background: #14110f;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .prompt-card pre {
+    font-family: var(--mono); font-size: 11.5px; line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap; word-break: break-word;
+    max-height: 260px; overflow-y: auto;
+  }
+  .copy-btn {
+    background: var(--accent); color: var(--bg-deep);
+    border: none; padding: 8px 12px; border-radius: 4px;
+    cursor: pointer; font-family: var(--mono);
+    font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1px;
+    transition: opacity 0.15s;
+  }
+  .copy-btn:hover { opacity: 0.85; }
+
+  /* ──────── Preview ──────── */
+  .preview-pane {
+    background: var(--bg-deep);
+    padding: 24px;
+    overflow: hidden;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  .preview-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    color: var(--text-muted);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .scroll-indicator {
+    color: var(--accent); font-family: var(--mono);
+    text-transform: none; letter-spacing: 0; font-size: 11px;
+  }
+
+  .device-frame {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    position: relative;
+    min-height: 0;
+  }
+
+  .mock-page {
+    height: 100%;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    position: relative;
+  }
+  .mock-page::-webkit-scrollbar { width: 6px; }
+  .mock-page::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .mock-navbar {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    font-family: var(--serif);
+  }
+  .mock-navbar .brand {
+    font-size: 18px; font-weight: 600;
+    color: var(--text-heading); margin-right: 16px;
+  }
+  .mock-navbar .sep { color: var(--border); font-size: 14px; }
+  .mock-navbar a {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 14px; padding: 0 6px;
+  }
+
+  .mock-blog-layout {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 16px 96px;
+    font-family: var(--serif);
+    position: relative;
+  }
+  .mock-blog-layout h1 {
+    font-size: 28px; margin-bottom: 8px;
+    color: var(--text-heading); font-weight: 600;
+  }
+  .mock-blog-layout .meta {
+    font-size: 13px; color: var(--text-muted);
+    margin-bottom: 32px; font-family: var(--mono);
+  }
+  .mock-blog-layout h2 {
+    font-size: 20px; margin: 32px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-heading); font-weight: 600;
+  }
+  .mock-blog-layout p {
+    margin-bottom: 16px; line-height: 1.8; font-size: 15px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     The ToC component.
+
+     Default state: ToC hidden above the viewport. Burger hidden too
+     (until you've scrolled enough that revealing the ToC makes sense).
+
+     - Scroll DOWN past 30px: burger fades in.
+     - Scroll UP at any point: ToC slides into view.
+     - Scroll DOWN again: ToC slides back out.
+     - Tap burger: opens popover with full ToC entries.
+     ═══════════════════════════════════════════════════════════ */
+
+  .toc {
+    --reveal-duration: 280ms;
+    --reveal-easing: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* The inline panel — fixed at top, slides in from above */
+  .toc-inline {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    width: calc(100% - 32px);
+    max-width: 680px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    z-index: 50;
+    will-change: transform, opacity;
+    pointer-events: none;
+    /* Default hidden state set per-variant below */
+  }
+
+  .toc-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .toc-row { display: flex; align-items: center; font-family: var(--serif); }
+  .toc-row.child { padding-left: 14px; }
+  .toc-item {
+    display: block; flex: 1;
+    padding: 4px 0 4px 12px;
+    border-left: 2px solid transparent;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-decoration: none;
+  }
+  .toc-item.child { font-size: 13px; }
+  .toc-item.active { color: var(--accent); border-left-color: var(--accent); }
+
+  /* The burger button — fixed top-left */
+  .toc-burger {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 60;
+    will-change: opacity, transform;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.85);
+    transition: opacity 220ms ease, transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .toc-burger:hover { color: var(--accent); border-color: var(--accent); }
+  .toc-burger svg { width: 18px; height: 18px; }
+
+  /* Burger appears once user has scrolled past 30px */
+  .toc.toc-burger-shown .toc-burger {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  /* Popover (when burger is tapped) */
+  .toc-popover {
+    position: fixed;
+    top: 60px;
+    left: 16px;
+    width: 280px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 70;
+    will-change: opacity, transform;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 140ms ease, transform 140ms ease;
+  }
+  .toc.toc-open .toc-popover {
+    opacity: 1; transform: none; pointer-events: auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     Reveal variants. Each defines:
+     - The hidden state of .toc-inline (default)
+     - The revealed state when .toc is .toc-revealed
+     All animate only opacity + transform → GPU compositor.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Variant: SLIDE — clean translateY drop. */
+  .toc[data-variant="slide"] .toc-inline {
+    transform: translate(-50%, -130%);
+    opacity: 0;
+    transition:
+      transform var(--reveal-duration) var(--reveal-easing),
+      opacity calc(var(--reveal-duration) * 0.7) ease;
+  }
+  .toc[data-variant="slide"].toc-revealed .toc-inline {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Variant: DROP — translateY with a tiny spring overshoot. */
+  .toc[data-variant="drop"] .toc-inline {
+    transform: translate(-50%, -130%) scale(0.97);
+    opacity: 0;
+    transition:
+      transform var(--reveal-duration) cubic-bezier(0.34, 1.4, 0.64, 1),
+      opacity calc(var(--reveal-duration) * 0.7) ease;
+  }
+  .toc[data-variant="drop"].toc-revealed .toc-inline {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Variant: FADE — pure opacity, minimal motion. */
+  .toc[data-variant="fade"] .toc-inline {
+    transform: translate(-50%, 0);
+    opacity: 0;
+    transition: opacity var(--reveal-duration) ease;
+  }
+  .toc[data-variant="fade"].toc-revealed .toc-inline {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Variant: BLUR-FADE — opacity + slight scale, very subtle. */
+  .toc[data-variant="blur"] .toc-inline {
+    transform: translate(-50%, -8%) scale(0.96);
+    opacity: 0;
+    transition:
+      transform var(--reveal-duration) var(--reveal-easing),
+      opacity var(--reveal-duration) ease;
+  }
+  .toc[data-variant="blur"].toc-revealed .toc-inline {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="controls">
+    <h1>
+      ToC Reveal
+      <span class="sub">scroll-up to show · GPU-only</span>
+    </h1>
+
+    <div class="perf-badge">● transform & opacity only</div>
+
+    <div class="ctrl-section">
+      <div class="ctrl-label">Reveal style</div>
+      <div class="variant-cards" id="variant-cards">
+        <button data-variant="slide" class="active">
+          <span class="name">Slide</span>
+          <span class="desc">Clean drop from above. Solid and predictable.</span>
+        </button>
+        <button data-variant="drop">
+          <span class="name">Drop</span>
+          <span class="desc">Drops in with a tiny spring overshoot. Slightly playful.</span>
+        </button>
+        <button data-variant="fade">
+          <span class="name">Fade</span>
+          <span class="desc">Pure opacity, no motion. The most subtle option.</span>
+        </button>
+        <button data-variant="blur">
+          <span class="name">Blur-fade</span>
+          <span class="desc">Tiny lift + scale + fade. Soft focus-pull feel.</span>
+        </button>
+      </div>
+    </div>
+
+    <hr class="ctrl-divider">
+
+    <div class="ctrl-section">
+      <label class="ctrl-label">
+        Reveal duration
+        <output id="duration-out">280ms</output>
+      </label>
+      <input type="range" id="duration" min="120" max="600" value="280" step="20">
+    </div>
+
+    <div class="ctrl-section">
+      <label class="ctrl-label">
+        Hide threshold
+        <output id="hide-out">8px</output>
+      </label>
+      <input type="range" id="hide" min="2" max="40" value="8" step="2">
+      <span style="font-size:10px;color:var(--text-muted);">Scroll-down delta required to hide the ToC again.</span>
+    </div>
+
+    <div class="prompt-card">
+      <div class="ctrl-label">Prompt to copy back</div>
+      <pre id="prompt"></pre>
+      <button class="copy-btn" id="copy">Copy prompt</button>
+    </div>
+  </aside>
+
+  <main class="preview-pane">
+    <div class="preview-header">
+      <span>Live preview · scroll down then back up</span>
+      <span class="scroll-indicator" id="scroll-indicator">scroll: 0px</span>
+    </div>
+    <div class="device-frame">
+      <div class="mock-page" id="mock-page">
+        <nav class="mock-navbar">
+          <span class="brand">Toby Davis</span>
+          <span class="sep">·</span>
+          <a href="#">Home</a>
+          <a href="#">Blog</a>
+          <a href="#">Projects</a>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+        </nav>
+
+        <div class="mock-blog-layout">
+          <nav class="toc" data-variant="slide" id="toc">
+            <div class="toc-inline" id="toc-inline">
+              <div class="toc-title">On this page</div>
+              <div class="toc-row"><a href="#" class="toc-item active">Introduction</a></div>
+              <div class="toc-row"><a href="#" class="toc-item">Building blocks</a></div>
+              <div class="toc-row child"><a href="#" class="toc-item child">Components</a></div>
+              <div class="toc-row child"><a href="#" class="toc-item child">Routing</a></div>
+              <div class="toc-row"><a href="#" class="toc-item">Conclusion</a></div>
+            </div>
+            <button class="toc-burger" id="toc-burger" aria-label="Toggle table of contents">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
+              </svg>
+            </button>
+            <div class="toc-popover" id="toc-popover">
+              <div class="toc-title">On this page</div>
+              <div class="toc-row"><a href="#" class="toc-item active">Introduction</a></div>
+              <div class="toc-row"><a href="#" class="toc-item">Building blocks</a></div>
+              <div class="toc-row child"><a href="#" class="toc-item child">Components</a></div>
+              <div class="toc-row child"><a href="#" class="toc-item child">Routing</a></div>
+              <div class="toc-row"><a href="#" class="toc-item">Conclusion</a></div>
+            </div>
+          </nav>
+
+          <article>
+            <h1>The shape of a static blog</h1>
+            <p class="meta">Toby Davis · 2026-05-04 · 8 min read</p>
+
+            <p>By default, the page shows just the article — title and content. The table of contents is hidden above the viewport.</p>
+
+            <p>Scroll down a few hundred pixels, then start scrolling back up. The ToC slides into view from the top, like a smart navbar reappearing. Reverse direction again and it slides back out. The burger button at the top-left stays visible once you've scrolled, giving an alternative way to summon the full ToC as a popover.</p>
+
+            <h2>Introduction</h2>
+            <p>This is the smart-navigation pattern most modern apps use: hide secondary chrome by default, reveal it on intent. "Intent" is detected here as a scroll-up gesture — when the user reverses direction, they're usually looking for navigation.</p>
+
+            <p>The animation is direction-driven, not position-driven. A small JS scroll listener tracks delta between consecutive scroll positions and toggles a single class on the ToC element. CSS transitions handle the rest, animating only <code>transform</code> and <code>opacity</code> for compositor-friendly performance.</p>
+
+            <h2>Building blocks</h2>
+            <p>Pick a reveal style on the left. Slide is the cleanest, Drop adds a tiny spring, Fade is the most subtle, Blur-fade combines a small lift with the fade for a soft focus-pull feel.</p>
+
+            <p>Tune the reveal duration if you want it punchier or more leisurely. The hide threshold controls how much downward scroll is required before the ToC slides back out — set it higher if accidental scrolls feel jumpy.</p>
+
+            <h2>Conclusion</h2>
+            <p>This pattern keeps the page distraction-free at rest while making navigation a single gesture away. Apple, Google, and most modern reading apps use this exact mechanic.</p>
+
+            <p>Pick your favourite below and copy the prompt — I'll wire it into the real ToC component.</p>
+            <p style="height: 200px;"></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const DEFAULTS = {
+  variant: 'slide',
+  duration: 280,
+  hide_threshold: 8,
+};
+
+const state = { ...DEFAULTS };
+
+const toc = document.getElementById('toc');
+const tocBurger = document.getElementById('toc-burger');
+const mockPage = document.getElementById('mock-page');
+const promptEl = document.getElementById('prompt');
+const scrollIndicator = document.getElementById('scroll-indicator');
+
+function applyState() {
+  toc.dataset.variant = state.variant;
+  toc.style.setProperty('--reveal-duration', state.duration + 'ms');
+
+  document.querySelectorAll('#variant-cards button').forEach(b => {
+    b.classList.toggle('active', b.dataset.variant === state.variant);
+  });
+
+  document.getElementById('duration-out').textContent = state.duration + 'ms';
+  document.getElementById('hide-out').textContent = state.hide_threshold + 'px';
+}
+
+let lastScroll = 0;
+let ticking = false;
+
+function onScroll() {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => {
+    const cur = mockPage.scrollTop;
+    const delta = cur - lastScroll;
+
+    // Reveal if scrolling up beyond a small noise threshold
+    if (delta < -2 && cur > 30) {
+      toc.classList.add('toc-revealed');
+    } else if (delta > state.hide_threshold) {
+      toc.classList.remove('toc-revealed');
+    }
+
+    // Burger appears once you've scrolled past 30px
+    toc.classList.toggle('toc-burger-shown', cur > 30);
+
+    scrollIndicator.textContent = `scroll: ${Math.round(cur)}px${delta < 0 ? ' ↑' : delta > 0 ? ' ↓' : ''}`;
+
+    lastScroll = cur;
+    ticking = false;
+  });
+}
+
+mockPage.addEventListener('scroll', onScroll, { passive: true });
+
+tocBurger.addEventListener('click', e => {
+  e.stopPropagation();
+  toc.classList.toggle('toc-open');
+});
+
+document.querySelectorAll('.toc-popover .toc-item').forEach(a => {
+  a.addEventListener('click', () => toc.classList.remove('toc-open'));
+});
+
+document.querySelectorAll('#variant-cards button').forEach(b => {
+  b.addEventListener('click', () => {
+    state.variant = b.dataset.variant;
+    applyState();
+    updatePrompt();
+  });
+});
+
+document.getElementById('duration').addEventListener('input', e => {
+  state.duration = +e.target.value;
+  applyState();
+  updatePrompt();
+});
+
+document.getElementById('hide').addEventListener('input', e => {
+  state.hide_threshold = +e.target.value;
+  applyState();
+  updatePrompt();
+});
+
+function updatePrompt() {
+  const variantDesc = {
+    slide: "translates from above (translateY -130% → 0) plus a quick fade-in",
+    drop:  "translates from above (translateY -130% → 0) plus a slight scale (0.97 → 1) with a small spring overshoot, plus a quick fade-in",
+    fade:  "fades in (opacity 0 → 1) with no motion",
+    blur:  "drops in slightly (translateY -8% → 0) and scales (0.96 → 1) plus fades, like a soft focus-pull",
+  };
+
+  const lines = [];
+  lines.push('Replace the current ToC mobile behaviour with a scroll-direction reveal pattern.');
+  lines.push('');
+  lines.push('Default state: only the article (heading + body) is visible. The ToC is hidden');
+  lines.push('above the viewport. The burger button is hidden too at scroll = 0.');
+  lines.push('');
+  lines.push('Behaviour:');
+  lines.push('- When the user scrolls down past 30px, the burger button fades in at the top-left.');
+  lines.push('- When the user reverses scroll direction (scrolls up), the ToC slides in from above.');
+  lines.push(`- When the user scrolls down again (delta > ${state.hide_threshold}px), the ToC slides back out.`);
+  lines.push('- Tapping the burger toggles a popover containing the full ToC entries.');
+  lines.push('');
+  lines.push(`Reveal animation: ${variantDesc[state.variant]}.`);
+  lines.push('');
+  lines.push('Implementation:');
+  lines.push('- ToC inline panel: `position: fixed; top: 16px; left: 50%`, hidden by default via');
+  lines.push('  `transform: translate(-50%, -130%); opacity: 0`. CSS `transition` on transform');
+  lines.push('  + opacity. Adding `.toc-revealed` to the parent .toc element transitions to');
+  lines.push('  `transform: translate(-50%, 0); opacity: 1; pointer-events: auto`.');
+  lines.push('- Burger: `position: fixed; top: 12px; left: 16px`, 40×40 circle. Hidden by');
+  lines.push('  default; `.toc-burger-shown` on the parent fades it in (opacity 0 → 1, scale');
+  lines.push('  0.85 → 1) over 220ms with a tiny spring on the scale.');
+  lines.push('- JS scroll listener (passive, debounced via requestAnimationFrame): tracks delta');
+  lines.push('  between consecutive scroll positions. Adds `.toc-revealed` when delta < -2 and');
+  lines.push(`  scrollY > 30. Removes it when delta > ${state.hide_threshold}. Adds`);
+  lines.push('  `.toc-burger-shown` when scrollY > 30.');
+  lines.push('- Animate ONLY `transform` and `opacity`. Add `will-change: transform, opacity`');
+  lines.push('  to `.toc-inline` and `.toc-burger` so the browser puts them on compositor layers.');
+  lines.push('');
+  lines.push('Settings:');
+  lines.push(`- Variant: ${state.variant}`);
+  lines.push(`- Reveal duration: ${state.duration}ms`);
+  lines.push(`- Hide threshold (scroll-down delta): ${state.hide_threshold}px`);
+  lines.push('- Reveal trigger: scroll-up delta > 2px AND scrollY > 30px');
+  lines.push('- Burger trigger: scrollY > 30px');
+  lines.push('');
+  lines.push('Update toc.rs / blog.css / blog_post.rs accordingly. Wide-screen sticky sidebar');
+  lines.push('layout stays unchanged — this only affects narrow.');
+
+  promptEl.textContent = lines.join("\n");
+}
+
+document.getElementById('copy').addEventListener('click', () => {
+  navigator.clipboard.writeText(promptEl.textContent).then(() => {
+    const btn = document.getElementById('copy');
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = original, 1200);
+  });
+});
+
+applyState();
+updatePrompt();
+</script>
+</body>
+</html>
