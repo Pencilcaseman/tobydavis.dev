@@ -20,3 +20,24 @@ pub fn ChevronRight(#[props(default = "1em".to_string())] size: String) -> Eleme
         }
     }
 }
+
+#[component]
+pub fn Burger(#[props(default = "1em".to_string())] size: String) -> Element {
+    rsx! {
+        svg {
+            width: "{size}",
+            height: "{size}",
+            fill: "none",
+            stroke: "currentColor",
+            stroke_width: "1.5",
+            view_box: "0 0 24 24",
+            xmlns: "http://www.w3.org/2000/svg",
+            "aria-hidden": "true",
+            path {
+                stroke_linecap: "round",
+                stroke_linejoin: "round",
+                d: "M4 7h16M4 12h16M4 17h16",
+            }
+        }
+    }
+}

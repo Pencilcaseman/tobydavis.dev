@@ -1,5 +1,5 @@
 .site-nav {
-    max-width: 640px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 20px 16px;
     display: flex;
@@ -55,7 +55,7 @@
 }
 
 .site-footer {
-    max-width: 640px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 20px 16px;
     border-top: 1px solid var(--border);

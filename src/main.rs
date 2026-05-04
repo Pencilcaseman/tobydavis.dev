@@ -11,17 +11,17 @@ mod views;
 enum Route {
     #[layout(Navbar)]
         #[route("/")]
-        Home {},
+        Home,
         #[route("/blog")]
-        BlogList {},
+        BlogList,
         #[route("/blog/:id")]
         BlogPost { id: String },
         #[route("/projects")]
-        Projects {},
+        Projects,
         #[route("/about")]
-        About {},
+        About,
         #[route("/contact")]
-        Contact {},
+        Contact,
 }
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");

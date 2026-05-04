@@ -200,6 +200,19 @@ fn render_post(
         ServerFnError::new(format!("HTML export error:\n{}", msgs.join("\n")))
     })?;
 
+    // Debug: find where SVGs are in the output
+    for (i, _) in full_html.match_indices("<svg") {
+        let end = (i + 200).min(full_html.len());
+        eprintln!("=== SVG at byte {} ===\n{}\n", i, &full_html[i..end]);
+    }
+    // Also dump the full HTML length and first occurrence of "dot product"
+    eprintln!("=== Full HTML length: {} ===", full_html.len());
+    if let Some(idx) = full_html.find("dot product") {
+        let start = idx.saturating_sub(50);
+        let end = (idx + 500).min(full_html.len());
+        eprintln!("=== AROUND 'dot product' ===\n{}\n=== END ===", &full_html[start..end]);
+    }
+
     let body = extract_body(&full_html);
     let (processed, toc) = process_headings(&body);
     Ok((processed, toc))

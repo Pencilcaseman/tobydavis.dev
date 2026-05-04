@@ -1,5 +1,5 @@
-use crate::components::{Footer, ThemeToggle};
 use crate::Route;
+use crate::components::{Footer, ThemeToggle};
 use dioxus::prelude::*;
 
 #[component]

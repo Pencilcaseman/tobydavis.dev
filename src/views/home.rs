@@ -4,9 +4,8 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn Home() -> Element {
-    let posts = use_server_future(move || async move {
-        get_all_posts().await.unwrap_or_default()
-    })?;
+    let posts =
+        use_server_future(move || async move { get_all_posts().await.unwrap_or_default() })?;
 
     let projects = get_projects();
 

@@ -1,16 +1,15 @@
 { pkgs, lib, ... }:
 let
-  # TODO: Remove when 117 is released in unstable
   wasm-bindgen-cli = pkgs.buildWasmBindgenCli rec {
     src = pkgs.fetchCrate {
       pname = "wasm-bindgen-cli";
-      version = "0.2.117";
-      hash = "sha256-vtDQXL8FSgdutqXG7/rBUWgrYCtzdmeVQQkWkjasvZU=";
+      version = "0.2.120";
+      hash = "sha256-Dkkx8Bhfk+y/jEz9Fzwytmv2N3Gj/7ST+5MlPRzzetU=";
     };
     cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
       inherit src;
       inherit (src) pname version;
-      hash = "sha256-eKe7uwneUYxejSbG/1hKqg6bSmtL0KQ9ojlazeqTi88=";
+      hash = "sha256-5Zu/Sh9aBMxB+KGC1MHWJAQ8PuE40M6lsenkpFEwJ6A=";
     };
   };
 in
@@ -20,12 +19,10 @@ in
     jujutsu
 
     dioxus-cli
-    wasm-bindgen-cli
-    binaryen
-
-    twiggy
-
+    openssl
     tailwindcss_4
+    wasm-bindgen-cli
+    twiggy
   ];
 
   languages = {

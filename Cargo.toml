@@ -4,24 +4,27 @@ version = "0.1.0"
 authors = ["Toby Davis"]
 edition = "2024"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+dioxus = { version = "=0.7.7", features = ["router", "fullstack"] }
+wasm-bindgen = "=0.2.120"
+
+typst = { version = "0.14", optional = true }
+typst-assets = { version = "0.14", features = ["fonts"], optional = true }
+typst-html = { version = "0.14", optional = true }
+typst-kit = { version = "0.14", optional = true }
+
 chrono = { version = "0.4", features = ["serde"] }
-dioxus = { version = "0.7.4", features = ["router", "fullstack"] }
 serde = { version = "1", features = ["derive"] }
 toml = "1.1.2"
-typst = "0.14"
-typst-assets = { version = "0.14", features = ["fonts"] }
-typst-html = "0.14"
-typst-kit = "0.14"
+
+getrandom = { version = "*", features = ["wasm_js"] }
 
 [features]
 default = ["web"]
 web = ["dioxus/web"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
-server = ["dioxus/server"]
+server = ["dioxus/server", "typst", "typst-assets", "typst-html", "typst-kit"]
 
 [profile.release]
 panic = "abort"

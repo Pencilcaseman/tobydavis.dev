@@ -7,7 +7,8 @@ pub fn About() -> Element {
             class: "page-content",
             h1 { "About" }
             p {
-                "I'm Toby Davis, a systems programmer interested in high-performance computing, numerical methods, and programming language design."
+                "I'm Toby Davis, a systems programmer interested in high-performance computing,
+                numerical methods, and programming language design."
             }
             p {
                 "I build things primarily with Rust and C++. My main project is "
