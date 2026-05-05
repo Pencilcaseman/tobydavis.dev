@@ -124,7 +124,7 @@
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: max-height 0.25s ease, opacity 0.2s ease;
+    transition: var(--theme-transition), max-height 0.25s ease, opacity 0.2s ease;
 }
 
 .toc-row.child-row.visible { max-height: 40px; opacity: 1; }
@@ -136,7 +136,6 @@
     border-left: 2px solid transparent;
     color: var(--text-muted);
     font-size: 1em;
-    transition: color 0.2s, border-color 0.2s;
 }
 
 .toc-item.toc-child { font-size: 13px; }
@@ -152,7 +151,7 @@
     padding: 2px 6px;
     flex-shrink: 0;
     line-height: 1;
-    transition: transform 0.2s, color 0.15s;
+    transition: var(--theme-transition), transform 0.2s;
 }
 
 .toc-toggle:hover    { color: var(--accent); }

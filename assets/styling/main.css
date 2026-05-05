@@ -28,12 +28,23 @@
     --code-ident:      light-dark(#1858c0,                 #70b0ff);
     --code-keyword:    light-dark(#9020c0,                 #d080f0);
     --code-comment:    light-dark(#aaaaaa,                 #555555);
+
+    --theme-transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        fill 0.2s,
+        stroke 0.2s;
 }
 
 [data-theme="light"] { color-scheme: light; }
 [data-theme="dark"]  { color-scheme: dark; }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: var(--theme-transition);
+}
 
 html, body {
     -webkit-text-size-adjust: 100%;
@@ -48,7 +59,6 @@ body {
     font-family: 'IBM Plex Serif', serif;
     font-size: 16px;
     line-height: 1.8;
-    transition: background-color 0.2s, color 0.2s;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -63,7 +73,6 @@ p { text-wrap: pretty; }
 a {
     color: var(--accent);
     text-decoration: none;
-    transition: color 0.15s;
 }
 
 a:hover { color: var(--text-heading); }

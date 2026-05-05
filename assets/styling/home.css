@@ -50,7 +50,7 @@
     gap: 24px;
 }
 
-.post-title       { font-size: 15px; color: var(--text); transition: color 0.15s; }
+.post-title       { font-size: 15px; color: var(--text); }
 .post-row:hover .post-title { color: var(--accent); }
 
 .post-desc        { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
