@@ -1,3 +1,6 @@
+#[cfg(feature = "server")]
+use std::path::PathBuf;
+
 use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -14,10 +17,6 @@ pub struct PostMeta {
     pub reading_time_minutes: u32,
 }
 
-fn default_entrypoint() -> String {
-    "main.typ".into()
-}
-
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PostData {
     pub meta: PostMeta,
@@ -32,12 +31,22 @@ pub struct TocEntry {
     pub level: u8,
 }
 
-const BLOG_DIR: &str = "content/blog";
+fn default_entrypoint() -> String {
+    "main.typ".into()
+}
 
+#[cfg(feature = "server")]
+fn blog_root() -> PathBuf {
+    let args = crate::misc::cli::get();
+    args.content_root.clone().unwrap_or("content".into()).join("blog")
+}
+
+#[cfg(feature = "server")]
 fn folder_id(path: &std::path::Path) -> Option<String> {
     path.file_name()?.to_str()?.split_once('_').map(|(_, id)| id.to_string())
 }
 
+#[cfg(feature = "server")]
 fn load_meta(dir: &std::path::Path) -> Option<PostMeta> {
     let id = folder_id(dir)?;
     let toml_str = std::fs::read_to_string(dir.join("config.toml")).ok()?;
@@ -49,7 +58,7 @@ fn load_meta(dir: &std::path::Path) -> Option<PostMeta> {
 
 #[get("/api/posts")]
 pub async fn get_all_posts() -> Result<Vec<PostMeta>> {
-    let Ok(entries) = std::fs::read_dir(BLOG_DIR) else {
+    let Ok(entries) = std::fs::read_dir(blog_root()) else {
         dioxus::logger::tracing::warn!("Blog post directory empty");
         return Ok(Vec::new());
     };
@@ -63,7 +72,7 @@ pub async fn get_all_posts() -> Result<Vec<PostMeta>> {
 
 #[get("/api/post/:id")]
 pub async fn get_post(id: String) -> Result<PostData> {
-    let post_dir = std::fs::read_dir(BLOG_DIR)
+    let post_dir = std::fs::read_dir(blog_root())
         .map_err(|e| ServerFnError::new(e.to_string()))?
         .flatten()
         .find(|e| folder_id(&e.path()).as_deref() == Some(&id))

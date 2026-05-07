@@ -135,6 +135,89 @@ _mm256_storeu_ps(&out[i], vc);
 Same semantics, different syntax. This is the core insight that makes
 abstraction possible.
 
+// = The Lorenz Attractor
+//
+// I built this in Typst.
+
+== It Takes Ages to Compile
+
+It's damn cool though.
+
+=== Here It Is!
+
+#[
+  #import "@preview/cetz:0.5.1": canvas, draw
+
+  #{
+    let initials = (
+      (
+        num_points: 100,
+        sigma: 10,
+        rho: 28,
+        beta: 8 / 3,
+        dt: 0.05,
+        p: (1.0, 1.0, 1.0),
+        stroke: stroke(paint: yellow, thickness: 0.05em),
+      ),
+      (
+        num_points: 100,
+        sigma: 10,
+        rho: 28,
+        beta: 8 / 3,
+        dt: 0.05,
+        p: (1.5, 1.0, 1.0),
+        stroke: stroke(paint: blue, thickness: 0.05em),
+      ),
+    )
+
+    let sets = ()
+
+    for (num_points, sigma, rho, beta, dt, p, stroke) in initials {
+      let f((x, y, z)) = (
+        sigma * (y - x),
+        x * (rho - z) - y,
+        x * y - beta * z,
+      )
+
+      let scale(s, (a, b, c)) = (s * a, s * b, s * c)
+      let add((a, b, c), (d, e, f)) = (a + d, b + e, c + f)
+
+      let rk4(p) = {
+        let k1 = f(p)
+        let k2 = f(add(p, scale(dt / 2, k1)))
+        let k3 = f(add(p, scale(dt / 2, k2)))
+        let k4 = f(add(p, scale(dt, k3)))
+        add(p, scale(dt / 6, add(add(k1, scale(2, k2)), add(scale(2, k3), k4))))
+      }
+
+      let points = ()
+
+      for i in range(num_points) {
+        points.push(p)
+        p = rk4(p)
+      }
+
+      sets.push((points, stroke))
+    }
+
+    figure(canvas(length: 1em, {
+      import draw: *
+
+      ortho(
+        flatten: true,
+        x: 90deg,
+        y: 20deg,
+        z: -20deg,
+        {
+          for (points, stroke) in sets {
+            line(..points, stroke: stroke)
+          }
+        },
+      )
+    }))
+  }
+]
+
 === A Quick Aside on Auto-Vectorization
 
 Before we dive in, it's worth noting that compilers _can_ auto-vectorize simple

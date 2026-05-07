@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
 
 use crate::{
-    Route,
     components::{Footer, ThemeToggle},
+    misc::route::Route,
 };
 
 #[component]

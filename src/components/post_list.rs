@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{Route, data::PostMeta};
+use crate::{data::PostMeta, misc::route::Route};
 
 #[component]
 pub fn PostList(posts: Vec<PostMeta>) -> Element {

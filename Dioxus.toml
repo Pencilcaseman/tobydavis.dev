@@ -1,21 +1,15 @@
 [application]
 
+[bundle]
+publisher = "Toby Davis"
+identifier = "com.tobydavis"
+
 [web.app]
+title = "tobydavis.dev"
 
-# HTML title tag content
-title = "tobydavis-dev"
-
-# include `assets` in web platform
 [web.resource]
-
-# Additional CSS style files
 style = []
-
-# Additional JavaScript files
 script = []
 
 [web.resource.dev]
-
-# Javascript code file
-# serve: [dev-server] only
 script = []
